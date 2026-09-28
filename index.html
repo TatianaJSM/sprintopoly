@@ -4,280 +4,213 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <title>Sprintopoly</title>
-
   <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
 
-  <!-- MENSAJES -->
-  <div id="toast"></div>
+<div id="toast"></div>
 
+<!-- INICIO -->
+<section id="home" class="screen">
+  <div class="hero card">
 
-  <!-- =========================
-       PANTALLA PRINCIPAL
-  ========================== -->
-
-  <section id="home" class="screen">
-
-    <div class="hero card">
-
-      <div class="logo">
-        🎩 <span>SPRINTOPOLY</span>
-      </div>
-
-      <h1>La retrospectiva que se juega</h1>
-
-      <p>
-        2–5 personas · una sala · respuestas sincronizadas
-      </p>
-
-      <div class="homegrid">
-
-        <!-- CREAR SALA -->
-
-        <div>
-
-          <h2>Crear partida</h2>
-
-          <input
-            id="hostName"
-            value="Tatiana"
-            maxlength="20"
-            placeholder="Tu nombre"
-          >
-
-          <button id="createBtn">
-            CREAR SALA
-          </button>
-
-        </div>
-
-
-        <!-- UNIRSE -->
-
-        <div>
-
-          <h2>Unirme</h2>
-
-          <input
-            id="joinName"
-            placeholder="Tu nombre"
-            maxlength="20"
-          >
-
-          <input
-            id="roomCode"
-            placeholder="CÓDIGO"
-            maxlength="5"
-          >
-
-          <button id="joinBtn">
-            UNIRME
-          </button>
-
-        </div>
-
-      </div>
-
+    <div class="logo">
+      🎩 <span>SPRINTOPOLY</span>
     </div>
 
-  </section>
+    <h1>La retrospectiva que se juega</h1>
+    <p>2–5 personas · una sala · respuestas sincronizadas</p>
 
+    <div class="homegrid">
 
-  <!-- =========================
-       LOBBY
-  ========================== -->
+      <div>
+        <h2>Crear partida</h2>
 
-  <section id="lobby" class="screen hidden">
-
-    <div class="card lobby">
-
-      <div class="logo">
-        🎩 <span>SPRINTOPOLY</span>
-      </div>
-
-      <h2>
-        Sala
-        <strong id="lobbyCode"></strong>
-      </h2>
-
-      <p id="count">
-        0/5 jugadores
-      </p>
-
-      <div id="lobbyPlayers"></div>
-
-
-      <!--
-        IMPORTANTE:
-        ESTE BOTÓN YA NO ESTÁ OCULTO
-      -->
-
-      <button id="startBtn">
-        🎲 COMENZAR RETRO
-      </button>
-
-
-      <p class="muted">
-        Comparte el código con el equipo.
-        Cada persona entra desde su computadora.
-      </p>
-
-    </div>
-
-  </section>
-
-
-  <!-- =========================
-       JUEGO
-  ========================== -->
-
-  <section id="game" class="screen hidden">
-
-    <main class="layout">
-
-
-      <!-- TABLERO -->
-
-      <div id="board" class="board">
-
-        <div class="center">
-
-          <div class="logo big">
-            SPRINTOPOLY
-          </div>
-
-          <p>
-            La retrospectiva que se juega
-          </p>
-
-          <div id="die">
-            ⚄
-          </div>
-
-          <button id="rollBtn">
-            🎲 TIRAR DADO
-          </button>
-
-          <div id="turnText"></div>
-
-        </div>
-
-      </div>
-
-
-      <!-- JUGADORES -->
-
-      <aside class="side card">
-
-        <h2>
-          🎩 Jugadores
-        </h2>
-
-        <div id="players"></div>
-
-        <button id="summaryBtn">
-          📋 VER RESUMEN
-        </button>
-
-        <button
-          id="resetBtn"
-          class="secondary hostOnly"
+        <input
+          id="hostName"
+          value="Tatiana"
+          maxlength="20"
+          placeholder="Tu nombre"
         >
-          ↻ REINICIAR
+
+        <button id="createBtn">
+          CREAR SALA
+        </button>
+      </div>
+
+      <div>
+        <h2>Unirme</h2>
+
+        <input
+          id="joinName"
+          placeholder="Tu nombre"
+          maxlength="20"
+        >
+
+        <input
+          id="roomCode"
+          placeholder="CÓDIGO"
+          maxlength="5"
+        >
+
+        <button id="joinBtn">
+          UNIRME
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- LOBBY -->
+<section id="lobby" class="screen hidden">
+
+  <div class="card lobby">
+
+    <div class="logo">
+      🎩 <span>SPRINTOPOLY</span>
+    </div>
+
+    <h2>
+      Sala <strong id="lobbyCode"></strong>
+    </h2>
+
+    <p id="count">
+      0/5 jugadores
+    </p>
+
+    <div id="lobbyPlayers"></div>
+
+    <!-- ESTE BOTÓN NUNCA ESTÁ OCULTO -->
+    <button id="startBtn">
+      🎲 COMENZAR RETRO
+    </button>
+
+    <p class="muted">
+      Comparte el código con el equipo.
+      Cada persona entra desde su computadora.
+    </p>
+
+  </div>
+
+</section>
+
+
+<!-- JUEGO -->
+<section id="game" class="screen hidden">
+
+  <main class="layout">
+
+    <div id="board" class="board">
+
+      <div class="center">
+
+        <div class="logo big">
+          🎩 SPRINTOPOLY
+        </div>
+
+        <p>La retrospectiva que se juega</p>
+
+        <div id="die">
+          ⚄
+        </div>
+
+        <button id="rollBtn">
+          🎲 TIRAR DADO
         </button>
 
-      </aside>
+        <div id="turnText"></div>
 
-    </main>
-
-  </section>
-
-
-  <!-- =========================
-       MODAL DE PREGUNTA
-  ========================== -->
-
-  <div
-    id="promptModal"
-    class="modal hidden"
-  >
-
-    <div class="modalcard">
-
-      <div id="promptBadge"></div>
-
-      <h2 id="promptTitle"></h2>
-
-      <p id="promptQuestion"></p>
-
-      <textarea
-        id="answer"
-        placeholder="Escribe tu respuesta..."
-      ></textarea>
-
-      <button id="submitAnswer">
-        ENVIAR RESPUESTA
-      </button>
-
-      <div id="answerStatus"></div>
-
-      <div
-        id="revealed"
-        class="hidden"
-      ></div>
-
-      <button
-        id="continueBtn"
-        class="hidden"
-      >
-        CONTINUAR
-      </button>
+      </div>
 
     </div>
 
-  </div>
 
+    <aside class="side card">
 
-  <!-- =========================
-       RESUMEN
-  ========================== -->
+      <h2>🎩 Jugadores</h2>
 
-  <div
-    id="summaryModal"
-    class="modal hidden"
-  >
+      <div id="players"></div>
 
-    <div class="modalcard wide">
-
-      <button
-        class="x"
-        id="closeSummary"
-      >
-        ×
+      <button id="summaryBtn">
+        📋 VER RESUMEN
       </button>
 
-      <h2>
-        📋 Resumen de la retrospectiva
-      </h2>
+      <button
+        id="resetBtn"
+        class="secondary hostOnly"
+      >
+        ↻ REINICIAR
+      </button>
 
-      <div id="summaryContent"></div>
+    </aside>
 
-    </div>
+  </main>
+
+</section>
+
+
+<!-- MODAL PREGUNTA -->
+<div id="promptModal" class="modal hidden">
+
+  <div class="modalcard">
+
+    <div id="promptBadge"></div>
+
+    <h2 id="promptTitle"></h2>
+
+    <p id="promptQuestion"></p>
+
+    <textarea
+      id="answer"
+      placeholder="Escribe tu respuesta..."
+    ></textarea>
+
+    <button id="submitAnswer">
+      ENVIAR RESPUESTA
+    </button>
+
+    <div id="answerStatus"></div>
+
+    <div id="revealed" class="hidden"></div>
+
+    <button id="continueBtn" class="hidden">
+      CONTINUAR
+    </button>
 
   </div>
 
+</div>
 
-  <!-- JAVASCRIPT -->
 
-  <script
-    type="module"
-    src="app.js"
-  ></script>
+<!-- RESUMEN -->
+<div id="summaryModal" class="modal hidden">
+
+  <div class="modalcard wide">
+
+    <button
+      class="x"
+      id="closeSummary"
+    >
+      ×
+    </button>
+
+    <h2>
+      📋 Resumen de la retrospectiva
+    </h2>
+
+    <div id="summaryContent"></div>
+
+  </div>
+
+</div>
+
+
+<script type="module" src="app.js"></script>
 
 </body>
-
 </html>

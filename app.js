@@ -11,9 +11,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
 
-/* =====================================================
-   FIREBASE
-===================================================== */
+/* FIREBASE */
 
 const firebaseConfig = {
   apiKey: "AIzaSyDoo5RbGkMXhMIiursEXhj7jG8tN_QkmrE",
@@ -29,11 +27,10 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 
-/* =====================================================
-   VARIABLES GENERALES
-===================================================== */
+/* VARIABLES */
 
-const $ = id => document.getElementById(id);
+const $ = id =>
+  document.getElementById(id);
 
 const colors = [
   "#ff4f78",
@@ -48,14 +45,11 @@ let me = "";
 let state = null;
 
 
-/* =====================================================
-   TABLERO
-===================================================== */
+/* TABLERO */
 
 const spaces = [
 
   ["SALIDA", "🏁", "#ffd4e2"],
-
   ["EMPEZAR", "●", "#b8efca"],
   ["PARAR", "●", "#ffc0c0"],
   ["CONTINUAR", "●", "#ffd9a5"],
@@ -85,9 +79,7 @@ const spaces = [
 ];
 
 
-/* =====================================================
-   PREGUNTAS NORMALES
-===================================================== */
+/* PREGUNTAS */
 
 const prompts = {
 
@@ -113,10 +105,6 @@ const prompts = {
 
 };
 
-
-/* =====================================================
-   TARJETAS SORPRESA
-===================================================== */
 
 const surprises = [
 
@@ -173,14 +161,11 @@ const surprises = [
 ];
 
 
-/* =====================================================
-   CREAR CÓDIGO DE SALA
-===================================================== */
+/* UTILIDADES */
 
-function code() {
+function generateCode() {
 
-  return Math
-    .random()
+  return Math.random()
     .toString(36)
     .slice(2, 7)
     .toUpperCase();
@@ -188,75 +173,103 @@ function code() {
 }
 
 
-/* =====================================================
-   MENSAJES
-===================================================== */
-
 function toast(text) {
 
   $("toast").textContent = text;
 
-  $("toast").style.display = "block";
+  $("toast").style.display =
+    "block";
 
   setTimeout(() => {
 
-    $("toast").style.display = "none";
+    $("toast").style.display =
+      "none";
 
   }, 2500);
 
 }
 
 
-/* =====================================================
-   CAMBIAR PANTALLAS
-===================================================== */
-
 function show(id) {
 
-  ["home", "lobby", "game"].forEach(screen => {
+  [
+    "home",
+    "lobby",
+    "game"
+  ].forEach(screen => {
 
-    $(screen).classList.add("hidden");
+    $(screen)
+      .classList
+      .add("hidden");
 
   });
 
-  $(id).classList.remove("hidden");
+
+  $(id)
+    .classList
+    .remove("hidden");
 
 }
 
-
-/* =====================================================
-   SABER SI SOY HOST
-===================================================== */
 
 function amIHost() {
 
-  return !!state && state.host === me;
+  return (
+    state &&
+    state.host === me
+  );
 
 }
 
 
-/* =====================================================
-   CREAR SALA
-===================================================== */
+function sortedPlayers() {
+
+  return Object
+    .entries(
+      state?.players || {}
+    )
+    .sort(
+      (a, b) =>
+        a[1].order -
+        b[1].order
+    );
+
+}
+
+
+/* CREAR SALA */
 
 async function createRoom() {
 
-  const name = $("hostName").value.trim();
+  const name =
+    $("hostName")
+      .value
+      .trim();
+
 
   if (!name) {
 
-    toast("Escribe tu nombre");
+    toast(
+      "Escribe tu nombre"
+    );
 
     return;
 
   }
 
-  room = code();
 
-  me = crypto.randomUUID();
+  room =
+    generateCode();
+
+  me =
+    crypto.randomUUID();
+
 
   await set(
-    ref(db, "rooms/" + room),
+    ref(
+      db,
+      "rooms/" + room
+    ),
     {
 
       host: me,
@@ -269,7 +282,7 @@ async function createRoom() {
 
         [me]: {
 
-          name: name,
+          name,
 
           color: colors[0],
 
@@ -286,7 +299,12 @@ async function createRoom() {
     }
   );
 
-  localStorage.setItem("sp_me", me);
+
+  localStorage.setItem(
+    "sp_me",
+    me
+  );
+
 
   listen();
 
@@ -295,73 +313,117 @@ async function createRoom() {
 }
 
 
-/* =====================================================
-   UNIRSE A SALA
-===================================================== */
+/* UNIRSE */
 
 async function joinRoom() {
 
-  const name = $("joinName").value.trim();
+  const name =
+    $("joinName")
+      .value
+      .trim();
 
-  const enteredCode = $("roomCode")
-    .value
-    .trim()
-    .toUpperCase();
 
-  if (!name || !enteredCode) {
+  const enteredCode =
+    $("roomCode")
+      .value
+      .trim()
+      .toUpperCase();
 
-    toast("Completa nombre y código");
+
+  if (
+    !name ||
+    !enteredCode
+  ) {
+
+    toast(
+      "Completa nombre y código"
+    );
 
     return;
 
   }
 
-  const snapshot = await get(
-    ref(db, "rooms/" + enteredCode)
-  );
+
+  const snapshot =
+    await get(
+      ref(
+        db,
+        "rooms/" + enteredCode
+      )
+    );
+
 
   if (!snapshot.exists()) {
 
-    toast("Sala no encontrada");
-
-    return;
-
-  }
-
-  const data = snapshot.val();
-
-  const players = Object.values(
-    data.players || {}
-  );
-
-  if (players.length >= 5) {
-
-    toast("La sala ya está llena");
-
-    return;
-
-  }
-
-  if (data.status !== "lobby") {
-
-    toast("La partida ya comenzó");
-
-    return;
-
-  }
-
-  room = enteredCode;
-
-  me = crypto.randomUUID();
-
-  const usedOrders = players.map(
-    player => player.order
-  );
-
-  const order = [0, 1, 2, 3, 4]
-    .find(
-      number => !usedOrders.includes(number)
+    toast(
+      "Sala no encontrada"
     );
+
+    return;
+
+  }
+
+
+  const data =
+    snapshot.val();
+
+
+  const players =
+    Object.values(
+      data.players || {}
+    );
+
+
+  if (
+    players.length >= 5
+  ) {
+
+    toast(
+      "La sala ya está llena"
+    );
+
+    return;
+
+  }
+
+
+  if (
+    data.status !== "lobby"
+  ) {
+
+    toast(
+      "La partida ya comenzó"
+    );
+
+    return;
+
+  }
+
+
+  room =
+    enteredCode;
+
+
+  me =
+    crypto.randomUUID();
+
+
+  const usedOrders =
+    players.map(
+      player =>
+        player.order
+    );
+
+
+  const order =
+    [0, 1, 2, 3, 4]
+      .find(
+        number =>
+          !usedOrders.includes(
+            number
+          )
+      );
+
 
   await set(
     ref(
@@ -370,18 +432,24 @@ async function joinRoom() {
     ),
     {
 
-      name: name,
+      name,
 
-      color: colors[order],
+      color:
+        colors[order],
 
       pos: 0,
 
-      order: order
+      order
 
     }
   );
 
-  localStorage.setItem("sp_me", me);
+
+  localStorage.setItem(
+    "sp_me",
+    me
+  );
+
 
   listen();
 
@@ -390,25 +458,34 @@ async function joinRoom() {
 }
 
 
-/* =====================================================
-   ESCUCHAR FIREBASE
-===================================================== */
+/* FIREBASE EN TIEMPO REAL */
 
 function listen() {
 
   onValue(
-    ref(db, "rooms/" + room),
+    ref(
+      db,
+      "rooms/" + room
+    ),
+
     snapshot => {
 
-      if (!snapshot.exists()) {
+      if (
+        !snapshot.exists()
+      ) {
 
-        toast("La sala ya no existe");
+        toast(
+          "La sala ya no existe"
+        );
 
         return;
 
       }
 
-      state = snapshot.val();
+
+      state =
+        snapshot.val();
+
 
       render();
 
@@ -418,69 +495,79 @@ function listen() {
 }
 
 
-/* =====================================================
-   JUGADORES ORDENADOS
-===================================================== */
-
-function sortedPlayers() {
-
-  return Object
-    .entries(state?.players || {})
-    .sort(
-      (a, b) =>
-        a[1].order - b[1].order
-    );
-
-}
-
-
-/* =====================================================
-   RENDER GENERAL
-
-   IMPORTANTE:
-   AQUÍ YA NO SE OCULTA startBtn.
-===================================================== */
+/* RENDER */
 
 function render() {
 
-  if (!state) return;
+  if (!state) {
 
-  const players = sortedPlayers();
+    return;
 
-  $("lobbyCode").textContent = room;
+  }
 
-  $("count").textContent =
-    `${players.length}/5 jugadores`;
 
-  $("lobbyPlayers").innerHTML = players
-    .map(([id, player]) => `
+  const players =
+    sortedPlayers();
 
-      <div class="lobbyPlayer">
 
-        <span
-          class="token"
-          style="background:${player.color}">
-        </span>
+  $("lobbyCode")
+    .textContent =
+      room;
 
-        <b>
-          ${esc(player.name)}
-        </b>
 
-        ${id === state.host ? " 👑" : ""}
+  $("count")
+    .textContent =
+      `${players.length}/5 jugadores`;
 
-      </div>
 
-    `)
-    .join("");
+  $("lobbyPlayers")
+    .innerHTML =
+
+      players
+        .map(
+          ([id, player]) => `
+
+            <div class="lobbyPlayer">
+
+              <span
+                class="token"
+                style="
+                  background:
+                  ${player.color}
+                "
+              ></span>
+
+              <b>
+                ${escapeHTML(
+                  player.name
+                )}
+              </b>
+
+              ${
+                id === state.host
+                  ? " 👑"
+                  : ""
+              }
+
+            </div>
+
+          `
+        )
+        .join("");
 
 
   /*
-    NO HAY NINGÚN CÓDIGO AQUÍ
-    QUE OCULTE EL BOTÓN COMENZAR.
+    MUY IMPORTANTE:
+
+    NO TOCAMOS startBtn AQUÍ.
+
+    EL BOTÓN PERMANECE VISIBLE.
   */
 
 
-  if (state.status === "game") {
+  if (
+    state.status === "game"
+  ) {
 
     show("game");
 
@@ -495,29 +582,101 @@ function render() {
 }
 
 
-/* =====================================================
-   DIBUJAR TABLERO
-===================================================== */
+/* INICIAR JUEGO */
+
+async function startGame() {
+
+  if (!state) {
+
+    toast(
+      "La sala todavía está cargando"
+    );
+
+    return;
+
+  }
+
+
+  if (!amIHost()) {
+
+    toast(
+      "Solo el anfitrión puede iniciar"
+    );
+
+    return;
+
+  }
+
+
+  const players =
+    sortedPlayers();
+
+
+  if (
+    players.length < 2
+  ) {
+
+    toast(
+      "Se necesitan al menos 2 jugadores"
+    );
+
+    return;
+
+  }
+
+
+  if (
+    players.length > 5
+  ) {
+
+    toast(
+      "Máximo 5 jugadores"
+    );
+
+    return;
+
+  }
+
+
+  await update(
+    ref(
+      db,
+      "rooms/" + room
+    ),
+    {
+
+      status: "game",
+
+      turn: 0,
+
+      round: null
+
+    }
+  );
+
+}
+
+
+/* DIBUJAR TABLERO */
 
 function drawBoard() {
 
-  const board = $("board");
+  const board =
+    $("board");
+
 
   board
     .querySelectorAll(
       ".space,.piece"
     )
     .forEach(
-      element => element.remove()
+      element =>
+        element.remove()
     );
 
 
   const coords = [];
 
-
-  /*
-    PARTE SUPERIOR
-  */
 
   for (
     let column = 1;
@@ -525,17 +684,12 @@ function drawBoard() {
     column++
   ) {
 
-    coords.push([
-      1,
-      column
-    ]);
+    coords.push(
+      [1, column]
+    );
 
   }
 
-
-  /*
-    LADO DERECHO
-  */
 
   for (
     let row = 2;
@@ -543,17 +697,12 @@ function drawBoard() {
     row++
   ) {
 
-    coords.push([
-      row,
-      8
-    ]);
+    coords.push(
+      [row, 8]
+    );
 
   }
 
-
-  /*
-    PARTE INFERIOR
-  */
 
   for (
     let column = 7;
@@ -561,17 +710,12 @@ function drawBoard() {
     column--
   ) {
 
-    coords.push([
-      6,
-      column
-    ]);
+    coords.push(
+      [6, column]
+    );
 
   }
 
-
-  /*
-    LADO IZQUIERDO
-  */
 
   for (
     let row = 5;
@@ -579,35 +723,37 @@ function drawBoard() {
     row--
   ) {
 
-    coords.push([
-      row,
-      1
-    ]);
+    coords.push(
+      [row, 1]
+    );
 
   }
 
-
-  /*
-    CREAR CASILLAS
-  */
 
   spaces.forEach(
     (space, index) => {
 
       const element =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
+
 
       element.className =
         "space";
 
+
       element.style.gridRow =
         coords[index][0];
+
 
       element.style.gridColumn =
         coords[index][1];
 
+
       element.style.background =
         space[2];
+
 
       element.innerHTML = `
 
@@ -621,132 +767,174 @@ function drawBoard() {
 
       `;
 
-      board.appendChild(element);
+
+      board.appendChild(
+        element
+      );
 
     }
   );
 
 
-  /*
-    FICHAS
-  */
+  sortedPlayers()
+    .forEach(
+      ([id, player], index) => {
 
-  sortedPlayers().forEach(
-    ([id, player], index) => {
+        const position =
+          coords[
+            player.pos %
+            spaces.length
+          ];
 
-      const position =
-        coords[
-          player.pos % spaces.length
-        ];
 
-      const piece =
-        document.createElement("div");
+        const piece =
+          document.createElement(
+            "div"
+          );
 
-      piece.className =
-        "piece";
 
-      piece.style.background =
-        player.color;
+        piece.className =
+          "piece";
 
-      piece.style.gridRow =
-        position[0];
 
-      piece.style.gridColumn =
-        position[1];
+        piece.style.background =
+          player.color;
 
-      piece.style.alignSelf =
-        "end";
 
-      piece.style.justifySelf =
-        "start";
+        piece.style.gridRow =
+          position[0];
 
-      piece.style.margin =
-        `0 0 ${
-          5 + (index % 2) * 24
-        }px ${
-          5 + Math.floor(index / 2) * 24
-        }px`;
 
-      board.appendChild(piece);
+        piece.style.gridColumn =
+          position[1];
 
-    }
-  );
+
+        piece.style.alignSelf =
+          "end";
+
+
+        piece.style.justifySelf =
+          "start";
+
+
+        piece.style.margin =
+          `0 0 ${
+            5 +
+            (index % 2) * 24
+          }px ${
+            5 +
+            Math.floor(
+              index / 2
+            ) * 24
+          }px`;
+
+
+        board.appendChild(
+          piece
+        );
+
+      }
+    );
 
 }
 
 
-/* =====================================================
-   PANEL DE JUGADORES
-===================================================== */
+/* PANEL DE JUGADORES */
 
 function renderPlayers() {
 
-  const players = sortedPlayers();
+  const players =
+    sortedPlayers();
 
-  if (!players.length) {
+
+  if (
+    !players.length
+  ) {
 
     return;
 
   }
 
+
   const current =
     players[
-      state.turn % players.length
+      state.turn %
+      players.length
     ];
 
 
-  $("players").innerHTML = players
-    .map(
-      ([id, player], index) => `
+  $("players")
+    .innerHTML =
 
-        <div class="player ${
-          index ===
-          state.turn % players.length
-            ? "active"
-            : ""
-        }">
+      players
+        .map(
+          ([id, player], index) => `
 
-          <span
-            class="token"
-            style="background:${player.color}">
-          </span>
+            <div
+              class="
+                player
+                ${
+                  index ===
+                  state.turn %
+                  players.length
+                    ? "active"
+                    : ""
+                }
+              "
+            >
 
-          <div>
+              <span
+                class="token"
+                style="
+                  background:
+                  ${player.color}
+                "
+              ></span>
 
-            <b>
-              ${esc(player.name)}
-            </b>
+              <div>
 
-            <br>
+                <b>
+                  ${escapeHTML(
+                    player.name
+                  )}
+                </b>
 
-            <small>
-              Casilla ${player.pos}
-              ·
-              ${spaces[player.pos][0]}
-            </small>
+                <br>
 
-          </div>
+                <small>
+                  Casilla
+                  ${player.pos}
+                  ·
+                  ${spaces[player.pos][0]}
+                </small>
 
-        </div>
+              </div>
 
-      `
-    )
-    .join("");
+            </div>
 
-
-  $("turnText").textContent =
-    current
-      ? `Turno de ${current[1].name}`
-      : "";
+          `
+        )
+        .join("");
 
 
-  $("rollBtn").disabled =
+  $("turnText")
+    .textContent =
 
-    !current ||
+      current
 
-    current[0] !== me ||
+        ? `Turno de ${current[1].name}`
 
-    !!state.round;
+        : "";
+
+
+  $("rollBtn")
+    .disabled =
+
+      !current ||
+
+      current[0] !== me ||
+
+      !!state.round;
 
 
   document
@@ -767,16 +955,17 @@ function renderPlayers() {
 }
 
 
-/* =====================================================
-   TIRAR DADO
-===================================================== */
+/* TIRAR DADO */
 
 async function roll() {
 
   const players =
     sortedPlayers();
 
-  if (!players.length) {
+
+  if (
+    !players.length
+  ) {
 
     return;
 
@@ -785,18 +974,15 @@ async function roll() {
 
   const current =
     players[
-      state.turn % players.length
+      state.turn %
+      players.length
     ];
 
 
   if (
-
     !current ||
-
     current[0] !== me ||
-
     state.round
-
   ) {
 
     return;
@@ -848,15 +1034,12 @@ async function roll() {
     ),
     {
 
-      pos: newPosition
+      pos:
+        newPosition
 
     }
   );
 
-
-  /*
-    OTRA VEZ
-  */
 
   if (
     type === "OTRA VEZ"
@@ -871,10 +1054,6 @@ async function roll() {
   }
 
 
-  /*
-    SALIDA
-  */
-
   if (
     type === "SALIDA"
   ) {
@@ -886,10 +1065,6 @@ async function roll() {
   }
 
 
-  /*
-    SELECCIONAR PREGUNTA
-  */
-
   let question;
 
 
@@ -900,14 +1075,10 @@ async function roll() {
     question =
 
       surprises[
-
         Math.floor(
-
           Math.random() *
           surprises.length
-
         )
-
       ];
 
   } else {
@@ -927,10 +1098,6 @@ async function roll() {
   }
 
 
-  /*
-    CREAR RONDA
-  */
-
   await set(
     ref(
       db,
@@ -938,11 +1105,13 @@ async function roll() {
     ),
     {
 
-      type: type,
+      type,
 
-      title: question[0],
+      title:
+        question[0],
 
-      question: question[1],
+      question:
+        question[1],
 
       answers: {},
 
@@ -954,13 +1123,13 @@ async function roll() {
 }
 
 
-/* =====================================================
-   MOSTRAR RONDA
-===================================================== */
+/* MOSTRAR PREGUNTA */
 
 function renderRound() {
 
-  if (!state.round) {
+  if (
+    !state.round
+  ) {
 
     $("promptModal")
       .classList
@@ -980,12 +1149,14 @@ function renderRound() {
     .remove("hidden");
 
 
-  $("promptTitle").textContent =
-    round.title;
+  $("promptTitle")
+    .textContent =
+      round.title;
 
 
-  $("promptQuestion").textContent =
-    round.question;
+  $("promptQuestion")
+    .textContent =
+      round.question;
 
 
   const answers =
@@ -1016,16 +1187,21 @@ function renderRound() {
     sortedPlayers();
 
 
-  $("answerStatus").textContent =
+  $("answerStatus")
+    .textContent =
 
-    `${Object.keys(answers).length}/` +
-
-    `${players.length} respuestas recibidas`;
+      `${
+        Object.keys(
+          answers
+        ).length
+      }/${players.length} respuestas recibidas`;
 
 
   const allAnswered =
 
-    Object.keys(answers).length ===
+    Object.keys(
+      answers
+    ).length ===
 
     players.length;
 
@@ -1049,48 +1225,49 @@ function renderRound() {
     );
 
 
-  if (allAnswered) {
+  if (
+    allAnswered
+  ) {
 
-    $("revealed").innerHTML =
+    $("revealed")
+      .innerHTML =
 
-      players
+        players
+          .map(
+            ([id, player]) => `
 
-        .map(
-          ([id, player]) => `
+              <div
+                class="answerCard"
+                style="
+                  border-color:
+                  ${player.color}
+                "
+              >
 
-            <div
-              class="answerCard"
-              style="
-                border-color:
-                ${player.color}
-              "
-            >
+                <b>
+                  ${escapeHTML(
+                    player.name
+                  )}
+                </b>
 
-              <b>
-                ${esc(player.name)}
-              </b>
+                <br>
 
-              <br>
+                ${escapeHTML(
+                  answers[id] || ""
+                )}
 
-              ${esc(
-                answers[id] || ""
-              )}
+              </div>
 
-            </div>
-
-          `
-        )
-
-        .join("");
+            `
+          )
+          .join("");
 
   }
 
 }
 
 
-/* =====================================================
-   ENVIAR RESPUESTA
-===================================================== */
+/* ENVIAR RESPUESTA */
 
 async function submitAnswer() {
 
@@ -1126,9 +1303,7 @@ async function submitAnswer() {
 }
 
 
-/* =====================================================
-   SIGUIENTE TURNO
-===================================================== */
+/* SIGUIENTE TURNO */
 
 async function nextTurn() {
 
@@ -1136,7 +1311,9 @@ async function nextTurn() {
     sortedPlayers();
 
 
-  if (!players.length) {
+  if (
+    !players.length
+  ) {
 
     return;
 
@@ -1159,9 +1336,11 @@ async function nextTurn() {
     ),
     {
 
-      turn: next,
+      turn:
+        next,
 
-      round: null
+      round:
+        null
 
     }
   );
@@ -1169,13 +1348,13 @@ async function nextTurn() {
 }
 
 
-/* =====================================================
-   CONTINUAR DESPUÉS DE RESPONDER
-===================================================== */
+/* CONTINUAR */
 
 async function continueRound() {
 
-  if (!amIHost()) {
+  if (
+    !amIHost()
+  ) {
 
     toast(
       "Solo el anfitrión puede continuar"
@@ -1218,106 +1397,13 @@ async function continueRound() {
 }
 
 
-/* =====================================================
-   INICIAR JUEGO
-===================================================== */
+/* REINICIAR */
 
-async function start() {
-
-  if (!state) {
-
-    toast(
-      "La sala todavía está cargando"
-    );
-
-    return;
-
-  }
-
-
-  /*
-    VALIDAR HOST
-  */
-
-  if (!amIHost()) {
-
-    toast(
-      "Solo el anfitrión puede iniciar"
-    );
-
-    return;
-
-  }
-
-
-  const players =
-    sortedPlayers();
-
-
-  /*
-    MÍNIMO 2 PERSONAS
-  */
+async function resetGame() {
 
   if (
-    players.length < 2
+    !amIHost()
   ) {
-
-    toast(
-      "Se necesitan al menos 2 jugadores"
-    );
-
-    return;
-
-  }
-
-
-  /*
-    MÁXIMO 5
-  */
-
-  if (
-    players.length > 5
-  ) {
-
-    toast(
-      "La sala admite máximo 5 jugadores"
-    );
-
-    return;
-
-  }
-
-
-  /*
-    INICIAR
-  */
-
-  await update(
-    ref(
-      db,
-      "rooms/" + room
-    ),
-    {
-
-      status: "game",
-
-      turn: 0,
-
-      round: null
-
-    }
-  );
-
-}
-
-
-/* =====================================================
-   REINICIAR JUEGO
-===================================================== */
-
-async function reset() {
-
-  if (!amIHost()) {
 
     toast(
       "Solo el anfitrión puede reiniciar"
@@ -1328,13 +1414,11 @@ async function reset() {
   }
 
 
-  const confirmation =
-    confirm(
+  if (
+    !confirm(
       "¿Reiniciar posiciones y respuestas?"
-    );
-
-
-  if (!confirmation) {
+    )
+  ) {
 
     return;
 
@@ -1375,11 +1459,9 @@ async function reset() {
 }
 
 
-/* =====================================================
-   RESUMEN DE LA RETROSPECTIVA
-===================================================== */
+/* RESUMEN */
 
-function summary() {
+function showSummary() {
 
   $("summaryModal")
     .classList
@@ -1411,9 +1493,7 @@ function summary() {
       round => {
 
         const group =
-
           groups[round.type] ||
-
           groups.SORPRESA;
 
 
@@ -1435,132 +1515,135 @@ function summary() {
     );
 
 
-  $("summaryContent").innerHTML =
+  $("summaryContent")
+    .innerHTML =
 
-    Object
-      .entries(groups)
+      Object
+        .entries(groups)
 
-      .map(
-        ([type, answers]) => `
+        .map(
+          ([type, answers]) => `
 
-          <div class="section">
+            <div class="section">
 
-            <h3>
-              ${type}
-            </h3>
+              <h3>
+                ${type}
+              </h3>
 
-            ${
-              answers.length
+              ${
+                answers.length
 
-                ?
+                  ?
 
-                answers
-                  .map(
-                    answer => `
+                  answers
+                    .map(
+                      answer => `
 
-                      <div class="answerCard">
+                        <div class="answerCard">
 
-                        ${esc(answer)}
+                          ${escapeHTML(
+                            answer
+                          )}
 
-                      </div>
+                        </div>
 
-                    `
-                  )
-                  .join("")
+                      `
+                    )
+                    .join("")
 
-                :
+                  :
 
-                `
+                  `
 
-                  <p class="muted">
-                    Sin respuestas todavía.
-                  </p>
+                    <p class="muted">
+                      Sin respuestas todavía.
+                    </p>
 
-                `
-            }
+                  `
+              }
 
-          </div>
+            </div>
 
-        `
-      )
+          `
+        )
 
-      .join("");
+        .join("");
 
 }
 
 
-/* =====================================================
-   SEGURIDAD PARA TEXTO HTML
-===================================================== */
+/* ESCAPAR TEXTO */
 
-function esc(value) {
+function escapeHTML(value) {
 
   return String(
     value ?? ""
-  ).replace(
+  )
+    .replace(
+      /[&<>"']/g,
 
-    /[&<>"']/g,
+      character => ({
 
-    character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
 
-      "&": "&amp;",
-
-      "<": "&lt;",
-
-      ">": "&gt;",
-
-      '"': "&quot;",
-
-      "'": "&#039;"
-
-    })[character]
-
-  );
+      })[character]
+    );
 
 }
 
 
-/* =====================================================
-   EVENTOS DE LOS BOTONES
-===================================================== */
+/* BOTONES */
 
-$("createBtn").onclick =
-  createRoom;
-
-
-$("joinBtn").onclick =
-  joinRoom;
+$("createBtn")
+  .onclick =
+    createRoom;
 
 
-$("startBtn").onclick =
-  start;
+$("joinBtn")
+  .onclick =
+    joinRoom;
 
 
-$("rollBtn").onclick =
-  roll;
+$("startBtn")
+  .onclick =
+    startGame;
 
 
-$("submitAnswer").onclick =
-  submitAnswer;
+$("rollBtn")
+  .onclick =
+    roll;
 
 
-$("continueBtn").onclick =
-  continueRound;
+$("submitAnswer")
+  .onclick =
+    submitAnswer;
 
 
-$("resetBtn").onclick =
-  reset;
+$("continueBtn")
+  .onclick =
+    continueRound;
 
 
-$("summaryBtn").onclick =
-  summary;
+$("resetBtn")
+  .onclick =
+    resetGame;
 
 
-$("closeSummary").onclick =
-  () => {
+$("summaryBtn")
+  .onclick =
+    showSummary;
 
-    $("summaryModal")
-      .classList
-      .add("hidden");
 
-  };
+$("closeSummary")
+  .onclick =
+    () => {
+
+      $("summaryModal")
+        .classList
+        .add("hidden");
+
+    };
