@@ -1,3 +1,7 @@
+/* =====================================================
+   CONFIGURACIÓN GENERAL
+===================================================== */
+
 * {
   box-sizing: border-box;
 }
@@ -21,11 +25,6 @@ body {
     );
 }
 
-
-/* =========================
-   GENERAL
-========================= */
-
 button,
 input,
 textarea {
@@ -34,22 +33,16 @@ textarea {
 
 button {
   border: none;
-
   border-radius: 12px;
 
-  padding:
-    14px
-    20px;
+  padding: 14px 20px;
 
   font-weight: 800;
 
   cursor: pointer;
 
-  background:
-    #302850;
-
-  color:
-    white;
+  background: #302850;
+  color: white;
 
   transition:
     transform 0.15s ease,
@@ -57,18 +50,13 @@ button {
 }
 
 button:hover {
-  transform:
-    translateY(-2px);
+  transform: translateY(-2px);
 }
 
 button:disabled {
   opacity: 0.45;
-
-  cursor:
-    not-allowed;
-
-  transform:
-    none;
+  cursor: not-allowed;
+  transform: none;
 }
 
 input,
@@ -79,75 +67,58 @@ textarea {
     2px solid
     #ded9ea;
 
-  border-radius:
-    12px;
+  border-radius: 12px;
 
-  padding:
-    13px;
+  padding: 13px;
 
-  margin-bottom:
-    12px;
+  margin-bottom: 12px;
 
-  outline:
-    none;
+  outline: none;
 }
 
 input:focus,
 textarea:focus {
-  border-color:
-    #7864e6;
+  border-color: #7864e6;
 }
 
 textarea {
-  min-height:
-    120px;
-
-  resize:
-    vertical;
+  min-height: 120px;
+  resize: vertical;
 }
 
 .hidden {
-  display:
-    none !important;
+  display: none !important;
 }
 
 
-/* =========================
+/* =====================================================
    PANTALLAS
-========================= */
+===================================================== */
 
 .screen {
-  min-height:
-    100vh;
+  min-height: 100vh;
 
-  display:
-    flex;
+  display: flex;
 
-  justify-content:
-    center;
+  justify-content: center;
+  align-items: center;
 
-  align-items:
-    center;
-
-  padding:
-    30px;
+  padding: 30px;
 }
 
 
-/* =========================
+/* =====================================================
    TARJETAS
-========================= */
+===================================================== */
 
 .card {
-  background:
-    #fffdf8;
+  background: #fffdf8;
 
   border:
     3px solid
     #302850;
 
-  border-radius:
-    28px;
+  border-radius: 28px;
 
   box-shadow:
     0 14px 0
@@ -155,39 +126,29 @@ textarea {
 }
 
 
-/* =========================
-   INICIO
-========================= */
+/* =====================================================
+   PANTALLA PRINCIPAL
+===================================================== */
 
 .hero {
   width:
     min(850px, 95vw);
 
-  padding:
-    45px;
+  padding: 45px;
 
-  text-align:
-    center;
+  text-align: center;
 }
 
 .logo {
-  display:
-    flex;
+  display: flex;
 
-  justify-content:
-    center;
+  justify-content: center;
+  align-items: center;
 
-  align-items:
-    center;
+  gap: 14px;
 
-  gap:
-    14px;
-
-  font-size:
-    32px;
-
-  font-weight:
-    900;
+  font-size: 32px;
+  font-weight: 900;
 }
 
 .logo span,
@@ -202,14 +163,10 @@ textarea {
       #935ee8
     );
 
-  -webkit-background-clip:
-    text;
+  -webkit-background-clip: text;
+  background-clip: text;
 
-  background-clip:
-    text;
-
-  color:
-    transparent;
+  color: transparent;
 }
 
 .hero h1 {
@@ -217,21 +174,22 @@ textarea {
     Georgia,
     serif;
 
-  font-size:
-    42px;
+  font-size: 42px;
 
-  margin-bottom:
-    10px;
+  margin-bottom: 10px;
 }
 
 .hero > p {
-  color:
-    #716d7c;
+  color: #716d7c;
 }
 
+
+/* =====================================================
+   CREAR / UNIRSE
+===================================================== */
+
 .homegrid {
-  display:
-    grid;
+  display: grid;
 
   grid-template-columns:
     repeat(
@@ -239,43 +197,35 @@ textarea {
       minmax(0, 1fr)
     );
 
-  gap:
-    30px;
+  gap: 30px;
 
-  margin-top:
-    35px;
+  margin-top: 35px;
 }
 
 .homegrid > div {
-  padding:
-    25px;
+  padding: 25px;
 
-  background:
-    white;
+  background: white;
 
-  border-radius:
-    20px;
+  border-radius: 20px;
 }
 
 .homegrid button {
-  width:
-    100%;
+  width: 100%;
 }
 
 
-/* =========================
+/* =====================================================
    LOBBY
-========================= */
+===================================================== */
 
 .lobby {
   width:
     min(820px, 95vw);
 
-  padding:
-    45px;
+  padding: 45px;
 
-  text-align:
-    center;
+  text-align: center;
 }
 
 .lobby h2 {
@@ -283,11 +233,9 @@ textarea {
     Georgia,
     serif;
 
-  font-size:
-    32px;
+  font-size: 32px;
 
-  margin-bottom:
-    8px;
+  margin-bottom: 8px;
 }
 
 #count {
@@ -295,59 +243,47 @@ textarea {
     Georgia,
     serif;
 
-  font-size:
-    20px;
+  font-size: 20px;
 }
 
 #lobbyPlayers {
-  margin:
-    25px 0;
+  margin: 25px 0;
 }
 
 .lobbyPlayer {
-  display:
-    flex;
+  display: flex;
 
-  align-items:
-    center;
+  align-items: center;
 
-  gap:
-    16px;
+  gap: 16px;
 
-  padding:
-    13px;
+  padding: 13px;
 
-  margin-bottom:
-    12px;
+  margin-bottom: 12px;
 
-  background:
-    white;
+  background: white;
 
-  border-radius:
-    16px;
+  border-radius: 16px;
 
-  text-align:
-    left;
+  text-align: left;
 
-  font-size:
-    19px;
+  font-size: 19px;
 }
 
+
+/* =====================================================
+   FICHAS PEQUEÑAS DE JUGADORES
+===================================================== */
+
 .token {
-  width:
-    38px;
+  width: 38px;
+  height: 38px;
 
-  height:
-    38px;
+  flex-shrink: 0;
 
-  flex-shrink:
-    0;
+  display: inline-block;
 
-  display:
-    inline-block;
-
-  border-radius:
-    50%;
+  border-radius: 50%;
 
   border:
     4px solid white;
@@ -357,83 +293,69 @@ textarea {
 }
 
 
-/* IMPORTANTE:
-   NO ESTÁ OCULTO */
+/* =====================================================
+   BOTÓN COMENZAR
+
+   NO SE OCULTA
+===================================================== */
 
 #startBtn {
-  display:
-    inline-block;
+  display: inline-block;
 
-  visibility:
-    visible;
+  visibility: visible;
 
-  opacity:
-    1;
+  opacity: 1;
 
   width:
     min(350px, 100%);
 
-  margin-top:
-    5px;
+  margin-top: 5px;
+  margin-bottom: 15px;
 
-  margin-bottom:
-    15px;
+  padding: 16px 24px;
 
-  padding:
-    16px 24px;
+  background: #302850;
 
-  background:
-    #302850;
+  color: white;
 
-  color:
-    white;
+  font-size: 17px;
 
-  font-size:
-    17px;
-
-  border-radius:
-    14px;
+  border-radius: 14px;
 }
 
 .muted {
-  color:
-    #77717d;
+  color: #77717d;
 }
 
 
-/* =========================
-   JUEGO
-========================= */
+/* =====================================================
+   DISTRIBUCIÓN DEL JUEGO
+===================================================== */
 
 .layout {
   width:
     min(1400px, 96vw);
 
-  display:
-    grid;
+  display: grid;
 
   grid-template-columns:
     minmax(700px, 1fr)
     300px;
 
-  gap:
-    25px;
+  gap: 25px;
 
-  align-items:
-    start;
+  align-items: start;
 }
 
 
-/* =========================
+/* =====================================================
    TABLERO
-========================= */
+===================================================== */
 
 .board {
-  min-height:
-    720px;
+  min-height: 720px;
 
-  display:
-    grid;
+  display: grid;
 
   grid-template-columns:
     repeat(8, 1fr);
@@ -441,65 +363,56 @@ textarea {
   grid-template-rows:
     repeat(6, 1fr);
 
-  background:
-    #fffdf8;
+  background: #fffdf8;
 
   border:
     4px solid
     #302850;
 
-  border-radius:
-    25px;
+  border-radius: 25px;
 
-  overflow:
-    hidden;
+  overflow: hidden;
 
-  position:
-    relative;
+  position: relative;
 }
+
+
+/* =====================================================
+   CASILLAS
+===================================================== */
 
 .space {
   border:
     1px solid
     #302850;
 
-  display:
-    flex;
+  display: flex;
 
-  flex-direction:
-    column;
+  flex-direction: column;
 
-  justify-content:
-    center;
+  justify-content: center;
 
-  align-items:
-    center;
+  align-items: center;
 
-  text-align:
-    center;
+  text-align: center;
 
-  padding:
-    6px;
+  padding: 6px;
 
-  font-size:
-    11px;
+  font-size: 11px;
 
-  font-weight:
-    900;
+  font-weight: 900;
 
-  position:
-    relative;
+  position: relative;
 }
 
 .dot {
-  font-size:
-    18px;
+  font-size: 18px;
 }
 
 
-/* =========================
-   CENTRO
-========================= */
+/* =====================================================
+   CENTRO DEL TABLERO
+===================================================== */
 
 .center {
   grid-row:
@@ -508,133 +421,135 @@ textarea {
   grid-column:
     2 / 8;
 
-  display:
-    flex;
+  display: flex;
 
-  flex-direction:
-    column;
+  flex-direction: column;
 
-  justify-content:
-    center;
+  justify-content: center;
 
-  align-items:
-    center;
+  align-items: center;
 
-  text-align:
-    center;
+  text-align: center;
 
-  padding:
-    30px;
+  padding: 30px;
 }
 
 .logo.big {
-  font-size:
-    42px;
+  font-size: 42px;
 }
 
 
-/* =========================
-   DADO
-========================= */
+/* =====================================================
+   MENSAJE DEL DADO
+===================================================== */
 
 .diceMessage {
-  min-height:
-    24px;
+  min-height: 28px;
 
-  margin-top:
-    10px;
+  margin-top: 10px;
 
-  font-weight:
-    800;
+  font-size: 18px;
 
-  color:
-    #5f5875;
+  font-weight: 800;
+
+  color: #5f5875;
 }
+
+
+/* =====================================================
+   DADO
+===================================================== */
 
 #die {
-  font-size:
-    86px;
+  font-size: 90px;
 
-  line-height:
-    1;
+  line-height: 1;
 
-  margin:
-    14px;
+  margin: 18px;
 
-  transform-origin:
-    center;
+  transform-origin: center;
 }
 
 
-/* ANIMACIÓN DEL DADO */
+/* =====================================================
+   ANIMACIÓN DEL DADO
+
+   Esta animación se repite mientras JS
+   cambia las caras del dado.
+===================================================== */
 
 #die.rolling {
   animation:
     diceShake
-    0.14s
-    linear
+    0.35s
+    ease-in-out
     infinite;
 }
+
 
 @keyframes diceShake {
 
   0% {
     transform:
-      rotate(-10deg)
+      rotate(-14deg)
       scale(1);
   }
 
-  25% {
-    transform:
-      rotate(8deg)
-      scale(1.10);
-  }
-
-  50% {
-    transform:
-      rotate(-5deg)
-      scale(0.96);
-  }
-
-  75% {
+  20% {
     transform:
       rotate(12deg)
-      scale(1.08);
+      scale(1.12);
+  }
+
+  40% {
+    transform:
+      rotate(-9deg)
+      scale(0.95);
+  }
+
+  60% {
+    transform:
+      rotate(15deg)
+      scale(1.13);
+  }
+
+  80% {
+    transform:
+      rotate(-8deg)
+      scale(1.04);
   }
 
   100% {
     transform:
-      rotate(-10deg)
+      rotate(-14deg)
       scale(1);
   }
 
 }
 
+
+/* =====================================================
+   TEXTO DEL TURNO
+===================================================== */
+
 #turnText {
-  margin-top:
-    15px;
+  margin-top: 15px;
 
-  font-size:
-    18px;
+  font-size: 18px;
 
-  font-weight:
-    bold;
+  font-weight: bold;
 }
 
 
-/* =========================
-   FICHAS
-========================= */
+/* =====================================================
+   FICHA DEL TABLERO
+===================================================== */
 
 .piece {
-  width:
-    22px;
+  width: 24px;
+  height: 24px;
 
-  height:
-    22px;
-
-  border-radius:
-    50%;
+  border-radius: 50%;
 
   border:
     3px solid white;
@@ -643,23 +558,27 @@ textarea {
     0 0 0 2px
     #302850;
 
-  z-index:
-    5;
+  z-index: 5;
 
   transition:
     transform
-    0.16s ease;
+    0.3s ease;
 }
 
 
-/* SALTO DE LA FICHA */
+/* =====================================================
+   ANIMACIÓN DE LA FICHA
+
+   AHORA DURA 0.85 SEGUNDOS.
+===================================================== */
 
 .piece.moving {
   animation:
     pieceHop
-    0.32s
-    ease;
+    0.85s
+    ease-in-out;
 }
+
 
 @keyframes pieceHop {
 
@@ -669,11 +588,27 @@ textarea {
       scale(1);
   }
 
-  45% {
+
+  20% {
     transform:
-      translateY(-14px)
-      scale(1.20);
+      translateY(-5px)
+      scale(1.05);
   }
+
+
+  50% {
+    transform:
+      translateY(-22px)
+      scale(1.30);
+  }
+
+
+  75% {
+    transform:
+      translateY(-8px)
+      scale(1.12);
+  }
+
 
   100% {
     transform:
@@ -684,82 +619,109 @@ textarea {
 }
 
 
-/* CASILLA FINAL */
+/* =====================================================
+   CASILLA DONDE CAYÓ
+===================================================== */
 
 .space.landed {
   animation:
     landedPulse
-    0.65s
+    1.5s
     ease;
 }
+
 
 @keyframes landedPulse {
 
   0% {
     box-shadow:
-      inset 0 0 0 0
+      inset
+      0 0 0 0
       #302850;
   }
 
-  45% {
+
+  30% {
     box-shadow:
-      inset 0 0 0 5px
+      inset
+      0 0 0 6px
       #302850;
+
+    transform:
+      scale(1);
   }
+
+
+  55% {
+    box-shadow:
+      inset
+      0 0 0 4px
+      #302850;
+
+    transform:
+      scale(0.96);
+  }
+
+
+  75% {
+    box-shadow:
+      inset
+      0 0 0 6px
+      #302850;
+
+    transform:
+      scale(1);
+  }
+
 
   100% {
     box-shadow:
-      inset 0 0 0 0
+      inset
+      0 0 0 0
       #302850;
   }
 
 }
 
 
-/* =========================
-   JUGADORES
-========================= */
+/* =====================================================
+   PANEL DE JUGADORES
+===================================================== */
 
 .side {
-  padding:
-    25px;
+  padding: 25px;
 }
 
 .side h2 {
-  margin-top:
-    0;
+  margin-top: 0;
 }
 
 .player {
-  display:
-    flex;
+  display: flex;
 
-  align-items:
-    center;
+  align-items: center;
 
-  gap:
-    12px;
+  gap: 12px;
 
-  padding:
-    12px;
+  padding: 12px;
 
-  margin-bottom:
-    10px;
+  margin-bottom: 10px;
 
-  background:
-    white;
+  background: white;
 
-  border-radius:
-    15px;
+  border-radius: 15px;
 
   border:
     2px solid
     transparent;
+
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .player.active {
-  border-color:
-    #302850;
+  border-color: #302850;
 
   box-shadow:
     0 4px 0
@@ -767,40 +729,36 @@ textarea {
 }
 
 .player .token {
-  width:
-    30px;
-
-  height:
-    30px;
+  width: 30px;
+  height: 30px;
 }
 
 .side button {
-  width:
-    100%;
+  width: 100%;
 
-  margin-top:
-    12px;
+  margin-top: 12px;
 }
+
+
+/* =====================================================
+   BOTÓN SECUNDARIO
+===================================================== */
 
 .secondary {
-  background:
-    #ebe7f3;
+  background: #ebe7f3;
 
-  color:
-    #302850;
+  color: #302850;
 }
 
 
-/* =========================
+/* =====================================================
    MODALES
-========================= */
+===================================================== */
 
 .modal {
-  position:
-    fixed;
+  position: fixed;
 
-  inset:
-    0;
+  inset: 0;
 
   background:
     rgba(
@@ -810,82 +768,84 @@ textarea {
       0.55
     );
 
-  display:
-    flex;
+  display: flex;
 
-  align-items:
-    center;
+  align-items: center;
 
-  justify-content:
-    center;
+  justify-content: center;
 
-  padding:
-    25px;
+  padding: 25px;
 
-  z-index:
-    1000;
+  z-index: 1000;
 }
+
+
+/* =====================================================
+   TARJETA DEL MODAL
+===================================================== */
 
 .modalcard {
   width:
     min(650px, 95vw);
 
-  max-height:
-    90vh;
+  max-height: 90vh;
 
-  overflow-y:
-    auto;
+  overflow-y: auto;
 
-  background:
-    #fffdf8;
+  background: #fffdf8;
 
   border:
     3px solid
     #302850;
 
-  border-radius:
-    25px;
+  border-radius: 25px;
 
   box-shadow:
     0 12px 0
     #302850;
 
-  padding:
-    35px;
+  padding: 35px;
 
-  position:
-    relative;
+  position: relative;
 
   animation:
     modalPop
-    0.22s
+    0.45s
     ease;
 }
+
 
 @keyframes modalPop {
 
   from {
     transform:
-      scale(0.92);
+      scale(0.85);
 
-    opacity:
-      0;
+    opacity: 0;
   }
+
+
+  60% {
+    transform:
+      scale(1.03);
+  }
+
 
   to {
     transform:
       scale(1);
 
-    opacity:
-      1;
+    opacity: 1;
   }
 
 }
+
 
 .modalcard.wide {
   width:
     min(1000px, 95vw);
 }
+
 
 .modalcard h2 {
   font-family:
@@ -893,77 +853,83 @@ textarea {
     serif;
 }
 
+
+/* =====================================================
+   ESTADO DE RESPUESTAS
+===================================================== */
+
 #answerStatus {
-  margin-top:
-    15px;
+  margin-top: 15px;
 
-  color:
-    #706a79;
+  color: #706a79;
 
-  font-weight:
-    bold;
+  font-weight: bold;
 }
 
+
+/* =====================================================
+   RESPUESTAS REVELADAS
+===================================================== */
+
 #revealed {
-  margin-top:
-    25px;
+  margin-top: 25px;
 }
 
 .answerCard {
-  background:
-    white;
+  background: white;
 
   border:
     3px solid
     #ded9ea;
 
-  border-radius:
-    16px;
+  border-radius: 16px;
 
-  padding:
-    15px;
+  padding: 15px;
 
-  margin-bottom:
-    12px;
+  margin-bottom: 12px;
 
-  text-align:
-    left;
+  text-align: left;
 }
+
+
+/* =====================================================
+   CONTINUAR
+===================================================== */
 
 #continueBtn {
-  width:
-    100%;
+  width: 100%;
 
-  margin-top:
-    15px;
+  margin-top: 15px;
 }
+
+
+/* =====================================================
+   CERRAR RESUMEN
+===================================================== */
 
 .x {
-  position:
-    absolute;
+  position: absolute;
 
-  right:
-    20px;
+  right: 20px;
 
-  top:
-    15px;
+  top: 15px;
 
-  background:
-    transparent;
+  background: transparent;
 
-  color:
-    #302850;
+  color: #302850;
 
-  font-size:
-    30px;
+  font-size: 30px;
 
-  padding:
-    5px;
+  padding: 5px;
 }
 
+
+/* =====================================================
+   RESUMEN
+===================================================== */
+
 .section {
-  margin-top:
-    30px;
+  margin-top: 30px;
 }
 
 .section h3 {
@@ -971,54 +937,43 @@ textarea {
     2px solid
     #ded9ea;
 
-  padding-bottom:
-    8px;
+  padding-bottom: 8px;
 }
 
 
-/* =========================
-   TOAST
-========================= */
+/* =====================================================
+   NOTIFICACIONES
+===================================================== */
 
 #toast {
-  position:
-    fixed;
+  position: fixed;
 
-  top:
-    20px;
+  top: 20px;
 
-  left:
-    50%;
+  left: 50%;
 
   transform:
     translateX(-50%);
 
-  background:
-    #302850;
+  background: #302850;
 
-  color:
-    white;
+  color: white;
 
-  padding:
-    13px 20px;
+  padding: 13px 20px;
 
-  border-radius:
-    12px;
+  border-radius: 12px;
 
-  z-index:
-    5000;
+  z-index: 5000;
 
-  display:
-    none;
+  display: none;
 
-  font-weight:
-    bold;
+  font-weight: bold;
 }
 
 
-/* =========================
+/* =====================================================
    RESPONSIVE
-========================= */
+===================================================== */
 
 @media (max-width: 950px) {
 
@@ -1028,11 +983,11 @@ textarea {
   }
 
   .board {
-    min-height:
-      600px;
+    min-height: 600px;
   }
 
 }
+
 
 @media (max-width: 700px) {
 
@@ -1041,30 +996,30 @@ textarea {
       1fr;
   }
 
+
   .hero,
   .lobby {
-    padding:
-      25px;
+    padding: 25px;
   }
+
 
   .hero h1 {
-    font-size:
-      32px;
+    font-size: 32px;
   }
+
 
   .logo {
-    font-size:
-      25px;
+    font-size: 25px;
   }
+
 
   .layout {
-    width:
-      100%;
+    width: 100%;
   }
 
+
   .board {
-    min-height:
-      500px;
+    min-height: 500px;
   }
 
 }
