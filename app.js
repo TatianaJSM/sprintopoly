@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+
 import {
   getDatabase,
   ref,
@@ -8,6 +9,11 @@ import {
   onValue,
   push
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+
+
+/* =====================================================
+   FIREBASE
+===================================================== */
 
 const firebaseConfig = {
   apiKey: "AIzaSyDoo5RbGkMXhMIiursEXhj7jG8tN_QkmrE",
@@ -21,6 +27,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
+
+/* =====================================================
+   VARIABLES GENERALES
+===================================================== */
 
 const $ = id => document.getElementById(id);
 
@@ -36,12 +47,15 @@ let room = "";
 let me = "";
 let state = null;
 
+
 /* =====================================================
    TABLERO
 ===================================================== */
 
 const spaces = [
+
   ["SALIDA", "🏁", "#ffd4e2"],
+
   ["EMPEZAR", "●", "#b8efca"],
   ["PARAR", "●", "#ffc0c0"],
   ["CONTINUAR", "●", "#ffd9a5"],
@@ -67,13 +81,16 @@ const spaces = [
   ["OTRA VEZ", "●", "#fff0a0"],
   ["CONTINUAR", "●", "#ffd9a5"],
   ["PARAR", "●", "#ffc0c0"]
+
 ];
 
+
 /* =====================================================
-   PREGUNTAS
+   PREGUNTAS NORMALES
 ===================================================== */
 
 const prompts = {
+
   EMPEZAR: [
     "EMPEZAR",
     "¿Qué deberíamos comenzar a hacer como equipo?"
@@ -93,135 +110,210 @@ const prompts = {
     "KUDOS",
     "Reconoce algo concreto que hizo bien otra persona del equipo."
   ]
+
 };
 
+
+/* =====================================================
+   TARJETAS SORPRESA
+===================================================== */
+
 const surprises = [
+
   [
     "🐞 BUG INESPERADO",
     "¿Qué fue lo más inesperado que ocurrió durante este Sprint?"
   ],
+
   [
     "👾 JEFE FINAL",
     "¿Cuál fue el mayor obstáculo del Sprint?"
   ],
+
   [
     "⚡ POWER-UP",
     "¿Qué hizo que el trabajo fluyera mejor?"
   ],
+
   [
     "↩️ CTRL + Z",
     "Si pudieras deshacer una decisión del Sprint, ¿cuál sería?"
   ],
+
   [
     "🔐 NIVEL SECRETO",
     "¿Qué aprendizaje obtuvimos que no esperábamos?"
   ],
+
   [
     "🔥 MODO DIFÍCIL",
     "¿Qué fue más complicado de lo esperado?"
   ],
+
   [
     "🎁 BONUS",
     "¿Qué salió bien y casi nadie reconoció?"
   ],
+
   [
     "🧩 DEUDA TÉCNICA",
     "¿Qué estamos posponiendo y deberíamos atender?"
   ],
+
   [
     "🧭 CAMBIO DE RUMBO",
     "¿Qué haríamos diferente si repitiéramos este Sprint?"
   ],
+
   [
     "🎲 SUERTE",
     "¿Qué momento del Sprint te gustaría destacar?"
   ]
+
 ];
 
+
 /* =====================================================
-   UTILIDADES
+   CREAR CÓDIGO DE SALA
 ===================================================== */
 
 function code() {
-  return Math.random()
+
+  return Math
+    .random()
     .toString(36)
     .slice(2, 7)
     .toUpperCase();
+
 }
 
+
+/* =====================================================
+   MENSAJES
+===================================================== */
+
 function toast(text) {
+
   $("toast").textContent = text;
+
   $("toast").style.display = "block";
 
   setTimeout(() => {
+
     $("toast").style.display = "none";
+
   }, 2500);
+
 }
 
+
+/* =====================================================
+   CAMBIAR PANTALLAS
+===================================================== */
+
 function show(id) {
+
   ["home", "lobby", "game"].forEach(screen => {
+
     $(screen).classList.add("hidden");
+
   });
 
   $(id).classList.remove("hidden");
+
 }
 
+
+/* =====================================================
+   SABER SI SOY HOST
+===================================================== */
+
 function amIHost() {
+
   return !!state && state.host === me;
+
 }
+
 
 /* =====================================================
    CREAR SALA
 ===================================================== */
 
 async function createRoom() {
+
   const name = $("hostName").value.trim();
 
   if (!name) {
+
     toast("Escribe tu nombre");
+
     return;
+
   }
 
   room = code();
+
   me = crypto.randomUUID();
 
-  await set(ref(db, "rooms/" + room), {
-    host: me,
-    status: "lobby",
-    turn: 0,
+  await set(
+    ref(db, "rooms/" + room),
+    {
 
-    players: {
-      [me]: {
-        name: name,
-        color: colors[0],
-        pos: 0,
-        order: 0
-      }
-    },
+      host: me,
 
-    round: null
-  });
+      status: "lobby",
+
+      turn: 0,
+
+      players: {
+
+        [me]: {
+
+          name: name,
+
+          color: colors[0],
+
+          pos: 0,
+
+          order: 0
+
+        }
+
+      },
+
+      round: null
+
+    }
+  );
 
   localStorage.setItem("sp_me", me);
 
   listen();
+
   show("lobby");
+
 }
+
 
 /* =====================================================
    UNIRSE A SALA
 ===================================================== */
 
 async function joinRoom() {
+
   const name = $("joinName").value.trim();
+
   const enteredCode = $("roomCode")
     .value
     .trim()
     .toUpperCase();
 
   if (!name || !enteredCode) {
+
     toast("Completa nombre y código");
+
     return;
+
   }
 
   const snapshot = await get(
@@ -229,79 +321,128 @@ async function joinRoom() {
   );
 
   if (!snapshot.exists()) {
+
     toast("Sala no encontrada");
+
     return;
+
   }
 
   const data = snapshot.val();
-  const players = Object.values(data.players || {});
+
+  const players = Object.values(
+    data.players || {}
+  );
 
   if (players.length >= 5) {
+
     toast("La sala ya está llena");
+
     return;
+
   }
 
   if (data.status !== "lobby") {
+
     toast("La partida ya comenzó");
+
     return;
+
   }
 
   room = enteredCode;
+
   me = crypto.randomUUID();
 
-  const usedOrders = players.map(player => player.order);
+  const usedOrders = players.map(
+    player => player.order
+  );
 
   const order = [0, 1, 2, 3, 4]
-    .find(number => !usedOrders.includes(number));
+    .find(
+      number => !usedOrders.includes(number)
+    );
 
   await set(
-    ref(db, `rooms/${room}/players/${me}`),
+    ref(
+      db,
+      `rooms/${room}/players/${me}`
+    ),
     {
+
       name: name,
+
       color: colors[order],
+
       pos: 0,
+
       order: order
+
     }
   );
 
   localStorage.setItem("sp_me", me);
 
   listen();
+
   show("lobby");
+
 }
 
+
 /* =====================================================
-   FIREBASE EN TIEMPO REAL
+   ESCUCHAR FIREBASE
 ===================================================== */
 
 function listen() {
-  onValue(ref(db, "rooms/" + room), snapshot => {
 
-    if (!snapshot.exists()) {
-      toast("La sala ya no existe");
-      return;
+  onValue(
+    ref(db, "rooms/" + room),
+    snapshot => {
+
+      if (!snapshot.exists()) {
+
+        toast("La sala ya no existe");
+
+        return;
+
+      }
+
+      state = snapshot.val();
+
+      render();
+
     }
+  );
 
-    state = snapshot.val();
-
-    render();
-  });
 }
+
 
 /* =====================================================
    JUGADORES ORDENADOS
 ===================================================== */
 
 function sortedPlayers() {
-  return Object.entries(state?.players || {})
-    .sort((a, b) => a[1].order - b[1].order);
+
+  return Object
+    .entries(state?.players || {})
+    .sort(
+      (a, b) =>
+        a[1].order - b[1].order
+    );
+
 }
+
 
 /* =====================================================
    RENDER GENERAL
+
+   IMPORTANTE:
+   AQUÍ YA NO SE OCULTA startBtn.
 ===================================================== */
 
 function render() {
+
   if (!state) return;
 
   const players = sortedPlayers();
@@ -313,6 +454,7 @@ function render() {
 
   $("lobbyPlayers").innerHTML = players
     .map(([id, player]) => `
+
       <div class="lobbyPlayer">
 
         <span
@@ -320,349 +462,654 @@ function render() {
           style="background:${player.color}">
         </span>
 
-        <b>${esc(player.name)}</b>
+        <b>
+          ${esc(player.name)}
+        </b>
 
         ${id === state.host ? " 👑" : ""}
 
       </div>
+
     `)
     .join("");
 
-  /* ===============================================
-     BOTÓN COMENZAR
-     Solo lo ve el host.
-     Se puede comenzar desde 2 jugadores.
-  =============================================== */
 
-  const canStart =
-    amIHost() &&
-    players.length >= 2 &&
-    players.length <= 5 &&
-    state.status === "lobby";
+  /*
+    NO HAY NINGÚN CÓDIGO AQUÍ
+    QUE OCULTE EL BOTÓN COMENZAR.
+  */
 
-  $("startBtn").classList.toggle(
-    "hidden",
-    !canStart
-  );
 
   if (state.status === "game") {
+
     show("game");
 
     drawBoard();
+
     renderPlayers();
+
     renderRound();
+
   }
+
 }
+
 
 /* =====================================================
    DIBUJAR TABLERO
 ===================================================== */
 
 function drawBoard() {
+
   const board = $("board");
 
   board
-    .querySelectorAll(".space,.piece")
-    .forEach(element => element.remove());
+    .querySelectorAll(
+      ".space,.piece"
+    )
+    .forEach(
+      element => element.remove()
+    );
+
 
   const coords = [];
 
-  for (let column = 1; column <= 8; column++) {
-    coords.push([1, column]);
+
+  /*
+    PARTE SUPERIOR
+  */
+
+  for (
+    let column = 1;
+    column <= 8;
+    column++
+  ) {
+
+    coords.push([
+      1,
+      column
+    ]);
+
   }
 
-  for (let row = 2; row <= 6; row++) {
-    coords.push([row, 8]);
+
+  /*
+    LADO DERECHO
+  */
+
+  for (
+    let row = 2;
+    row <= 6;
+    row++
+  ) {
+
+    coords.push([
+      row,
+      8
+    ]);
+
   }
 
-  for (let column = 7; column >= 1; column--) {
-    coords.push([6, column]);
+
+  /*
+    PARTE INFERIOR
+  */
+
+  for (
+    let column = 7;
+    column >= 1;
+    column--
+  ) {
+
+    coords.push([
+      6,
+      column
+    ]);
+
   }
 
-  for (let row = 5; row >= 2; row--) {
-    coords.push([row, 1]);
+
+  /*
+    LADO IZQUIERDO
+  */
+
+  for (
+    let row = 5;
+    row >= 2;
+    row--
+  ) {
+
+    coords.push([
+      row,
+      1
+    ]);
+
   }
 
-  spaces.forEach((space, index) => {
 
-    const element = document.createElement("div");
+  /*
+    CREAR CASILLAS
+  */
 
-    element.className = "space";
+  spaces.forEach(
+    (space, index) => {
 
-    element.style.gridRow = coords[index][0];
-    element.style.gridColumn = coords[index][1];
-    element.style.background = space[2];
+      const element =
+        document.createElement("div");
 
-    element.innerHTML = `
-      <span class="dot">${space[1]}</span>
-      <span>${space[0]}</span>
-    `;
+      element.className =
+        "space";
 
-    board.appendChild(element);
-  });
+      element.style.gridRow =
+        coords[index][0];
 
-  sortedPlayers().forEach(([id, player], index) => {
+      element.style.gridColumn =
+        coords[index][1];
 
-    const position =
-      coords[player.pos % spaces.length];
+      element.style.background =
+        space[2];
 
-    const piece =
-      document.createElement("div");
+      element.innerHTML = `
 
-    piece.className = "piece";
-    piece.style.background = player.color;
+        <span class="dot">
+          ${space[1]}
+        </span>
 
-    piece.style.gridRow = position[0];
-    piece.style.gridColumn = position[1];
+        <span>
+          ${space[0]}
+        </span>
 
-    piece.style.alignSelf = "end";
-    piece.style.justifySelf = "start";
+      `;
 
-    piece.style.margin =
-      `0 0 ${5 + (index % 2) * 24}px ` +
-      `${5 + Math.floor(index / 2) * 24}px`;
+      board.appendChild(element);
 
-    board.appendChild(piece);
-  });
+    }
+  );
+
+
+  /*
+    FICHAS
+  */
+
+  sortedPlayers().forEach(
+    ([id, player], index) => {
+
+      const position =
+        coords[
+          player.pos % spaces.length
+        ];
+
+      const piece =
+        document.createElement("div");
+
+      piece.className =
+        "piece";
+
+      piece.style.background =
+        player.color;
+
+      piece.style.gridRow =
+        position[0];
+
+      piece.style.gridColumn =
+        position[1];
+
+      piece.style.alignSelf =
+        "end";
+
+      piece.style.justifySelf =
+        "start";
+
+      piece.style.margin =
+        `0 0 ${
+          5 + (index % 2) * 24
+        }px ${
+          5 + Math.floor(index / 2) * 24
+        }px`;
+
+      board.appendChild(piece);
+
+    }
+  );
+
 }
+
 
 /* =====================================================
    PANEL DE JUGADORES
 ===================================================== */
 
 function renderPlayers() {
+
   const players = sortedPlayers();
 
-  if (!players.length) return;
+  if (!players.length) {
+
+    return;
+
+  }
 
   const current =
-    players[state.turn % players.length];
+    players[
+      state.turn % players.length
+    ];
+
 
   $("players").innerHTML = players
-    .map(([id, player], index) => `
-      <div class="player ${
-        index === state.turn % players.length
-          ? "active"
-          : ""
-      }">
+    .map(
+      ([id, player], index) => `
 
-        <span
-          class="token"
-          style="background:${player.color}">
-        </span>
+        <div class="player ${
+          index ===
+          state.turn % players.length
+            ? "active"
+            : ""
+        }">
 
-        <div>
-          <b>${esc(player.name)}</b>
-          <br>
+          <span
+            class="token"
+            style="background:${player.color}">
+          </span>
 
-          <small>
-            Casilla ${player.pos} ·
-            ${spaces[player.pos][0]}
-          </small>
+          <div>
+
+            <b>
+              ${esc(player.name)}
+            </b>
+
+            <br>
+
+            <small>
+              Casilla ${player.pos}
+              ·
+              ${spaces[player.pos][0]}
+            </small>
+
+          </div>
+
         </div>
 
-      </div>
-    `)
+      `
+    )
     .join("");
+
 
   $("turnText").textContent =
     current
       ? `Turno de ${current[1].name}`
       : "";
 
+
   $("rollBtn").disabled =
+
     !current ||
+
     current[0] !== me ||
+
     !!state.round;
 
+
   document
-    .querySelectorAll(".hostOnly")
-    .forEach(element => {
+    .querySelectorAll(
+      ".hostOnly"
+    )
+    .forEach(
+      element => {
 
-      element.style.display =
-        amIHost()
-          ? "block"
-          : "none";
+        element.style.display =
+          amIHost()
+            ? "block"
+            : "none";
 
-    });
+      }
+    );
+
 }
+
 
 /* =====================================================
    TIRAR DADO
 ===================================================== */
 
 async function roll() {
-  const players = sortedPlayers();
 
-  if (!players.length) return;
+  const players =
+    sortedPlayers();
 
-  const current =
-    players[state.turn % players.length];
+  if (!players.length) {
 
-  if (
-    !current ||
-    current[0] !== me ||
-    state.round
-  ) {
     return;
+
   }
 
-  $("rollBtn").disabled = true;
+
+  const current =
+    players[
+      state.turn % players.length
+    ];
+
+
+  if (
+
+    !current ||
+
+    current[0] !== me ||
+
+    state.round
+
+  ) {
+
+    return;
+
+  }
+
+
+  $("rollBtn").disabled =
+    true;
+
 
   const number =
-    1 + Math.floor(Math.random() * 6);
+    1 +
+    Math.floor(
+      Math.random() * 6
+    );
+
 
   $("die").textContent =
-    ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"]
-      [number - 1];
+
+    [
+      "⚀",
+      "⚁",
+      "⚂",
+      "⚃",
+      "⚄",
+      "⚅"
+    ][number - 1];
+
 
   const newPosition =
-    (current[1].pos + number) %
+
+    (
+      current[1].pos +
+      number
+    ) %
+
     spaces.length;
+
 
   const type =
     spaces[newPosition][0];
 
+
   await update(
-    ref(db, `rooms/${room}/players/${me}`),
+    ref(
+      db,
+      `rooms/${room}/players/${me}`
+    ),
     {
+
       pos: newPosition
+
     }
   );
 
-  /* OTRA VEZ */
 
-  if (type === "OTRA VEZ") {
-    toast(`${current[1].name} tira otra vez`);
+  /*
+    OTRA VEZ
+  */
+
+  if (
+    type === "OTRA VEZ"
+  ) {
+
+    toast(
+      `${current[1].name} tira otra vez`
+    );
+
     return;
+
   }
 
-  /* SALIDA */
 
-  if (type === "SALIDA") {
+  /*
+    SALIDA
+  */
+
+  if (
+    type === "SALIDA"
+  ) {
+
     await nextTurn();
+
     return;
+
   }
 
-  /* PREGUNTA */
+
+  /*
+    SELECCIONAR PREGUNTA
+  */
 
   let question;
 
-  if (type === "SORPRESA") {
+
+  if (
+    type === "SORPRESA"
+  ) {
+
     question =
+
       surprises[
+
         Math.floor(
-          Math.random() * surprises.length
+
+          Math.random() *
+          surprises.length
+
         )
+
       ];
+
   } else {
-    question = prompts[type];
+
+    question =
+      prompts[type];
+
   }
+
 
   if (!question) {
+
     await nextTurn();
+
     return;
+
   }
 
+
+  /*
+    CREAR RONDA
+  */
+
   await set(
-    ref(db, `rooms/${room}/round`),
+    ref(
+      db,
+      `rooms/${room}/round`
+    ),
     {
+
       type: type,
+
       title: question[0],
+
       question: question[1],
+
       answers: {},
+
       roller: me
+
     }
   );
+
 }
 
+
 /* =====================================================
-   RONDA / RESPUESTAS
+   MOSTRAR RONDA
 ===================================================== */
 
 function renderRound() {
+
   if (!state.round) {
-    $("promptModal").classList.add("hidden");
+
+    $("promptModal")
+      .classList
+      .add("hidden");
+
     return;
+
   }
 
-  const round = state.round;
 
-  $("promptModal").classList.remove("hidden");
+  const round =
+    state.round;
+
+
+  $("promptModal")
+    .classList
+    .remove("hidden");
+
 
   $("promptTitle").textContent =
     round.title;
 
+
   $("promptQuestion").textContent =
     round.question;
+
 
   const answers =
     round.answers || {};
 
+
   const myAnswer =
     answers[me];
 
-  $("answer").classList.toggle(
-    "hidden",
-    !!myAnswer
-  );
 
-  $("submitAnswer").classList.toggle(
-    "hidden",
-    !!myAnswer
-  );
+  $("answer")
+    .classList
+    .toggle(
+      "hidden",
+      !!myAnswer
+    );
 
-  const players = sortedPlayers();
+
+  $("submitAnswer")
+    .classList
+    .toggle(
+      "hidden",
+      !!myAnswer
+    );
+
+
+  const players =
+    sortedPlayers();
+
 
   $("answerStatus").textContent =
+
     `${Object.keys(answers).length}/` +
+
     `${players.length} respuestas recibidas`;
 
+
   const allAnswered =
+
     Object.keys(answers).length ===
+
     players.length;
 
-  $("revealed").classList.toggle(
-    "hidden",
-    !allAnswered
-  );
 
-  $("continueBtn").classList.toggle(
-    "hidden",
-    !(allAnswered && amIHost())
-  );
+  $("revealed")
+    .classList
+    .toggle(
+      "hidden",
+      !allAnswered
+    );
+
+
+  $("continueBtn")
+    .classList
+    .toggle(
+      "hidden",
+      !(
+        allAnswered &&
+        amIHost()
+      )
+    );
+
 
   if (allAnswered) {
+
     $("revealed").innerHTML =
+
       players
-        .map(([id, player]) => `
-          <div
-            class="answerCard"
-            style="border-color:${player.color}">
 
-            <b>${esc(player.name)}</b>
-            <br>
+        .map(
+          ([id, player]) => `
 
-            ${esc(answers[id] || "")}
+            <div
+              class="answerCard"
+              style="
+                border-color:
+                ${player.color}
+              "
+            >
 
-          </div>
-        `)
+              <b>
+                ${esc(player.name)}
+              </b>
+
+              <br>
+
+              ${esc(
+                answers[id] || ""
+              )}
+
+            </div>
+
+          `
+        )
+
         .join("");
+
   }
+
 }
+
 
 /* =====================================================
    ENVIAR RESPUESTA
 ===================================================== */
 
 async function submitAnswer() {
+
   const value =
-    $("answer").value.trim();
+    $("answer")
+      .value
+      .trim();
+
 
   if (!value) {
-    toast("Escribe una respuesta");
+
+    toast(
+      "Escribe una respuesta"
+    );
+
     return;
+
   }
+
 
   await set(
     ref(
@@ -672,204 +1119,448 @@ async function submitAnswer() {
     value
   );
 
-  $("answer").value = "";
+
+  $("answer").value =
+    "";
+
 }
+
 
 /* =====================================================
    SIGUIENTE TURNO
 ===================================================== */
 
 async function nextTurn() {
-  const players = sortedPlayers();
 
-  if (!players.length) return;
+  const players =
+    sortedPlayers();
+
+
+  if (!players.length) {
+
+    return;
+
+  }
+
 
   const next =
-    (state.turn + 1) % players.length;
+
+    (
+      state.turn + 1
+    ) %
+
+    players.length;
+
 
   await update(
-    ref(db, "rooms/" + room),
+    ref(
+      db,
+      "rooms/" + room
+    ),
     {
+
       turn: next,
+
       round: null
+
     }
   );
+
 }
 
+
 /* =====================================================
-   CONTINUAR DESPUÉS DE RESPUESTAS
+   CONTINUAR DESPUÉS DE RESPONDER
 ===================================================== */
 
 async function continueRound() {
-  if (!amIHost()) return;
 
-  const round = state.round;
+  if (!amIHost()) {
 
-  if (!round) return;
+    toast(
+      "Solo el anfitrión puede continuar"
+    );
+
+    return;
+
+  }
+
+
+  const round =
+    state.round;
+
+
+  if (!round) {
+
+    return;
+
+  }
+
 
   const historyRef =
-    push(ref(db, `rooms/${room}/history`));
 
-  await set(historyRef, round);
+    push(
+      ref(
+        db,
+        `rooms/${room}/history`
+      )
+    );
+
+
+  await set(
+    historyRef,
+    round
+  );
+
 
   await nextTurn();
+
 }
+
 
 /* =====================================================
    INICIAR JUEGO
 ===================================================== */
 
 async function start() {
-  if (!state) return;
+
+  if (!state) {
+
+    toast(
+      "La sala todavía está cargando"
+    );
+
+    return;
+
+  }
+
+
+  /*
+    VALIDAR HOST
+  */
 
   if (!amIHost()) {
-    toast("Solo el anfitrión puede iniciar");
+
+    toast(
+      "Solo el anfitrión puede iniciar"
+    );
+
     return;
+
   }
 
-  const players = sortedPlayers();
 
-  if (players.length < 2) {
-    toast("Se necesitan al menos 2 jugadores");
+  const players =
+    sortedPlayers();
+
+
+  /*
+    MÍNIMO 2 PERSONAS
+  */
+
+  if (
+    players.length < 2
+  ) {
+
+    toast(
+      "Se necesitan al menos 2 jugadores"
+    );
+
     return;
+
   }
+
+
+  /*
+    MÁXIMO 5
+  */
+
+  if (
+    players.length > 5
+  ) {
+
+    toast(
+      "La sala admite máximo 5 jugadores"
+    );
+
+    return;
+
+  }
+
+
+  /*
+    INICIAR
+  */
 
   await update(
-    ref(db, "rooms/" + room),
+    ref(
+      db,
+      "rooms/" + room
+    ),
     {
+
       status: "game",
+
       turn: 0,
+
       round: null
+
     }
   );
+
 }
 
+
 /* =====================================================
-   REINICIAR
+   REINICIAR JUEGO
 ===================================================== */
 
 async function reset() {
-  if (!amIHost()) return;
 
-  if (
-    !confirm(
-      "¿Reiniciar posiciones y respuestas?"
-    )
-  ) {
+  if (!amIHost()) {
+
+    toast(
+      "Solo el anfitrión puede reiniciar"
+    );
+
     return;
+
   }
 
+
+  const confirmation =
+    confirm(
+      "¿Reiniciar posiciones y respuestas?"
+    );
+
+
+  if (!confirmation) {
+
+    return;
+
+  }
+
+
   const updates = {
+
     turn: 0,
+
     round: null,
+
     history: null
+
   };
 
-  sortedPlayers().forEach(([id]) => {
-    updates[`players/${id}/pos`] = 0;
-  });
+
+  sortedPlayers()
+    .forEach(
+      ([id]) => {
+
+        updates[
+          `players/${id}/pos`
+        ] = 0;
+
+      }
+    );
+
 
   await update(
-    ref(db, "rooms/" + room),
+    ref(
+      db,
+      "rooms/" + room
+    ),
     updates
   );
+
 }
+
 
 /* =====================================================
    RESUMEN DE LA RETROSPECTIVA
 ===================================================== */
 
 function summary() {
+
   $("summaryModal")
     .classList
     .remove("hidden");
 
+
   const history =
     state.history || {};
 
+
   const groups = {
+
     EMPEZAR: [],
+
     PARAR: [],
+
     CONTINUAR: [],
+
     KUDOS: [],
+
     SORPRESA: []
+
   };
 
-  Object.values(history).forEach(round => {
 
-    const group =
-      groups[round.type] ||
-      groups.SORPRESA;
+  Object
+    .values(history)
+    .forEach(
+      round => {
 
-    Object
-      .values(round.answers || {})
-      .forEach(answer => {
-        group.push(answer);
-      });
+        const group =
 
-  });
+          groups[round.type] ||
+
+          groups.SORPRESA;
+
+
+        Object
+          .values(
+            round.answers || {}
+          )
+          .forEach(
+            answer => {
+
+              group.push(
+                answer
+              );
+
+            }
+          );
+
+      }
+    );
+
 
   $("summaryContent").innerHTML =
-    Object.entries(groups)
-      .map(([type, answers]) => `
-        <div class="section">
 
-          <h3>${type}</h3>
+    Object
+      .entries(groups)
 
-          ${
-            answers.length
-              ? answers
-                  .map(answer => `
-                    <div class="answerCard">
-                      ${esc(answer)}
-                    </div>
-                  `)
+      .map(
+        ([type, answers]) => `
+
+          <div class="section">
+
+            <h3>
+              ${type}
+            </h3>
+
+            ${
+              answers.length
+
+                ?
+
+                answers
+                  .map(
+                    answer => `
+
+                      <div class="answerCard">
+
+                        ${esc(answer)}
+
+                      </div>
+
+                    `
+                  )
                   .join("")
-              : `
-                <p class="muted">
-                  Sin respuestas todavía.
-                </p>
-              `
-          }
 
-        </div>
-      `)
+                :
+
+                `
+
+                  <p class="muted">
+                    Sin respuestas todavía.
+                  </p>
+
+                `
+            }
+
+          </div>
+
+        `
+      )
+
       .join("");
+
 }
 
+
 /* =====================================================
-   ESCAPAR HTML
+   SEGURIDAD PARA TEXTO HTML
 ===================================================== */
 
 function esc(value) {
-  return String(value ?? "")
-    .replace(
-      /[&<>"']/g,
-      character => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      })[character]
-    );
+
+  return String(
+    value ?? ""
+  ).replace(
+
+    /[&<>"']/g,
+
+    character => ({
+
+      "&": "&amp;",
+
+      "<": "&lt;",
+
+      ">": "&gt;",
+
+      '"': "&quot;",
+
+      "'": "&#039;"
+
+    })[character]
+
+  );
+
 }
 
+
 /* =====================================================
-   BOTONES
+   EVENTOS DE LOS BOTONES
 ===================================================== */
 
-$("createBtn").onclick = createRoom;
-$("joinBtn").onclick = joinRoom;
-$("startBtn").onclick = start;
-$("rollBtn").onclick = roll;
-$("submitAnswer").onclick = submitAnswer;
-$("continueBtn").onclick = continueRound;
-$("resetBtn").onclick = reset;
-$("summaryBtn").onclick = summary;
+$("createBtn").onclick =
+  createRoom;
 
-$("closeSummary").onclick = () => {
-  $("summaryModal")
-    .classList
-    .add("hidden");
-};
+
+$("joinBtn").onclick =
+  joinRoom;
+
+
+$("startBtn").onclick =
+  start;
+
+
+$("rollBtn").onclick =
+  roll;
+
+
+$("submitAnswer").onclick =
+  submitAnswer;
+
+
+$("continueBtn").onclick =
+  continueRound;
+
+
+$("resetBtn").onclick =
+  reset;
+
+
+$("summaryBtn").onclick =
+  summary;
+
+
+$("closeSummary").onclick =
+  () => {
+
+    $("summaryModal")
+      .classList
+      .add("hidden");
+
+  };
