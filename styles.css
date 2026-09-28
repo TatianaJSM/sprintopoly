@@ -5,7 +5,12 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
   color: #17133f;
 
   background:
@@ -16,6 +21,11 @@ body {
     );
 }
 
+
+/* =========================
+   GENERAL
+========================= */
+
 button,
 input,
 textarea {
@@ -24,14 +34,22 @@ textarea {
 
 button {
   border: none;
+
   border-radius: 12px;
-  padding: 14px 20px;
+
+  padding:
+    14px
+    20px;
 
   font-weight: 800;
+
   cursor: pointer;
 
-  background: #302850;
-  color: white;
+  background:
+    #302850;
+
+  color:
+    white;
 
   transition:
     transform 0.15s ease,
@@ -39,267 +57,383 @@ button {
 }
 
 button:hover {
-  transform: translateY(-2px);
+  transform:
+    translateY(-2px);
 }
 
 button:disabled {
   opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
+
+  cursor:
+    not-allowed;
+
+  transform:
+    none;
 }
 
 input,
 textarea {
   width: 100%;
 
-  border: 2px solid #ded9ea;
-  border-radius: 12px;
+  border:
+    2px solid
+    #ded9ea;
 
-  padding: 13px;
+  border-radius:
+    12px;
 
-  margin-bottom: 12px;
+  padding:
+    13px;
 
-  outline: none;
+  margin-bottom:
+    12px;
+
+  outline:
+    none;
 }
 
 input:focus,
 textarea:focus {
-  border-color: #7864e6;
+  border-color:
+    #7864e6;
 }
 
 textarea {
-  min-height: 120px;
-  resize: vertical;
+  min-height:
+    120px;
+
+  resize:
+    vertical;
 }
-
-
-/* IMPORTANTE:
-   SOLO LOS ELEMENTOS QUE REALMENTE
-   TENGAN class="hidden" SE OCULTAN.
-*/
 
 .hidden {
-  display: none !important;
+  display:
+    none !important;
 }
 
 
-/* PANTALLAS */
+/* =========================
+   PANTALLAS
+========================= */
 
 .screen {
-  min-height: 100vh;
+  min-height:
+    100vh;
 
-  display: flex;
+  display:
+    flex;
 
-  justify-content: center;
-  align-items: center;
+  justify-content:
+    center;
 
-  padding: 30px;
+  align-items:
+    center;
+
+  padding:
+    30px;
 }
 
 
-/* TARJETAS */
+/* =========================
+   TARJETAS
+========================= */
 
 .card {
-  background: #fffdf8;
+  background:
+    #fffdf8;
 
-  border: 3px solid #302850;
-  border-radius: 28px;
+  border:
+    3px solid
+    #302850;
 
-  box-shadow: 0 14px 0 #302850;
+  border-radius:
+    28px;
+
+  box-shadow:
+    0 14px 0
+    #302850;
 }
 
 
-/* INICIO */
+/* =========================
+   INICIO
+========================= */
 
 .hero {
-  width: min(850px, 95vw);
+  width:
+    min(850px, 95vw);
 
-  padding: 45px;
+  padding:
+    45px;
 
-  text-align: center;
+  text-align:
+    center;
 }
 
 .logo {
-  display: flex;
+  display:
+    flex;
 
-  justify-content: center;
-  align-items: center;
+  justify-content:
+    center;
 
-  gap: 14px;
+  align-items:
+    center;
 
-  font-size: 32px;
-  font-weight: 900;
+  gap:
+    14px;
+
+  font-size:
+    32px;
+
+  font-weight:
+    900;
 }
 
 .logo span,
 .logo.big {
-  background: linear-gradient(
-    90deg,
-    #ff5575,
-    #ff9b34,
-    #33c46e,
-    #359cff,
-    #935ee8
-  );
+  background:
+    linear-gradient(
+      90deg,
+      #ff5575,
+      #ff9b34,
+      #33c46e,
+      #359cff,
+      #935ee8
+    );
 
-  -webkit-background-clip: text;
-  background-clip: text;
+  -webkit-background-clip:
+    text;
 
-  color: transparent;
+  background-clip:
+    text;
+
+  color:
+    transparent;
 }
 
 .hero h1 {
-  font-family: Georgia, serif;
-  font-size: 42px;
+  font-family:
+    Georgia,
+    serif;
 
-  margin-bottom: 10px;
+  font-size:
+    42px;
+
+  margin-bottom:
+    10px;
 }
 
 .hero > p {
-  color: #716d7c;
+  color:
+    #716d7c;
 }
 
 .homegrid {
-  display: grid;
+  display:
+    grid;
 
   grid-template-columns:
-    repeat(2, minmax(0, 1fr));
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
 
-  gap: 30px;
+  gap:
+    30px;
 
-  margin-top: 35px;
+  margin-top:
+    35px;
 }
 
 .homegrid > div {
-  padding: 25px;
+  padding:
+    25px;
 
-  background: white;
+  background:
+    white;
 
-  border-radius: 20px;
+  border-radius:
+    20px;
 }
 
 .homegrid button {
-  width: 100%;
+  width:
+    100%;
 }
 
 
-/* LOBBY */
+/* =========================
+   LOBBY
+========================= */
 
 .lobby {
-  width: min(820px, 95vw);
+  width:
+    min(820px, 95vw);
 
-  padding: 45px;
+  padding:
+    45px;
 
-  text-align: center;
+  text-align:
+    center;
 }
 
 .lobby h2 {
-  font-family: Georgia, serif;
+  font-family:
+    Georgia,
+    serif;
 
-  font-size: 32px;
+  font-size:
+    32px;
 
-  margin-bottom: 8px;
+  margin-bottom:
+    8px;
 }
 
 #count {
-  font-family: Georgia, serif;
+  font-family:
+    Georgia,
+    serif;
 
-  font-size: 20px;
+  font-size:
+    20px;
 }
 
 #lobbyPlayers {
-  margin: 25px 0;
+  margin:
+    25px 0;
 }
 
 .lobbyPlayer {
-  display: flex;
+  display:
+    flex;
 
-  align-items: center;
+  align-items:
+    center;
 
-  gap: 16px;
+  gap:
+    16px;
 
-  padding: 13px;
+  padding:
+    13px;
 
-  margin-bottom: 12px;
+  margin-bottom:
+    12px;
 
-  background: white;
+  background:
+    white;
 
-  border-radius: 16px;
+  border-radius:
+    16px;
 
-  text-align: left;
+  text-align:
+    left;
 
-  font-size: 19px;
+  font-size:
+    19px;
 }
 
 .token {
-  width: 38px;
-  height: 38px;
+  width:
+    38px;
 
-  flex-shrink: 0;
+  height:
+    38px;
 
-  display: inline-block;
+  flex-shrink:
+    0;
 
-  border-radius: 50%;
+  display:
+    inline-block;
 
-  border: 4px solid white;
+  border-radius:
+    50%;
+
+  border:
+    4px solid white;
 
   box-shadow:
     0 0 0 2px #aaa;
 }
 
 
-/* BOTÓN COMENZAR
-
-   ESTE BOTÓN NO TIENE NINGUNA
-   REGLA QUE LO OCULTE.
-*/
+/* IMPORTANTE:
+   NO ESTÁ OCULTO */
 
 #startBtn {
-  display: inline-block;
+  display:
+    inline-block;
 
-  width: min(350px, 100%);
+  visibility:
+    visible;
 
-  margin-top: 5px;
-  margin-bottom: 15px;
+  opacity:
+    1;
 
-  padding: 16px 24px;
+  width:
+    min(350px, 100%);
 
-  background: #302850;
+  margin-top:
+    5px;
 
-  color: white;
+  margin-bottom:
+    15px;
 
-  font-size: 17px;
+  padding:
+    16px 24px;
 
-  border-radius: 14px;
+  background:
+    #302850;
 
-  visibility: visible;
-  opacity: 1;
+  color:
+    white;
+
+  font-size:
+    17px;
+
+  border-radius:
+    14px;
 }
 
 .muted {
-  color: #77717d;
+  color:
+    #77717d;
 }
 
 
-/* JUEGO */
+/* =========================
+   JUEGO
+========================= */
 
 .layout {
-  width: min(1400px, 96vw);
+  width:
+    min(1400px, 96vw);
 
-  display: grid;
+  display:
+    grid;
 
   grid-template-columns:
-    minmax(700px, 1fr) 300px;
+    minmax(700px, 1fr)
+    300px;
 
-  gap: 25px;
+  gap:
+    25px;
 
-  align-items: start;
+  align-items:
+    start;
 }
 
-.board {
-  min-height: 720px;
 
-  display: grid;
+/* =========================
+   TABLERO
+========================= */
+
+.board {
+  min-height:
+    720px;
+
+  display:
+    grid;
 
   grid-template-columns:
     repeat(8, 1fr);
@@ -307,282 +441,595 @@ textarea {
   grid-template-rows:
     repeat(6, 1fr);
 
-  background: #fffdf8;
+  background:
+    #fffdf8;
 
-  border: 4px solid #302850;
+  border:
+    4px solid
+    #302850;
 
-  border-radius: 25px;
+  border-radius:
+    25px;
 
-  overflow: hidden;
+  overflow:
+    hidden;
 
-  position: relative;
+  position:
+    relative;
 }
 
 .space {
-  border: 1px solid #302850;
+  border:
+    1px solid
+    #302850;
 
-  display: flex;
+  display:
+    flex;
 
-  flex-direction: column;
+  flex-direction:
+    column;
 
-  justify-content: center;
-  align-items: center;
+  justify-content:
+    center;
 
-  text-align: center;
+  align-items:
+    center;
 
-  padding: 6px;
+  text-align:
+    center;
 
-  font-size: 11px;
-  font-weight: 900;
+  padding:
+    6px;
 
-  position: relative;
+  font-size:
+    11px;
+
+  font-weight:
+    900;
+
+  position:
+    relative;
 }
 
 .dot {
-  font-size: 18px;
+  font-size:
+    18px;
 }
 
+
+/* =========================
+   CENTRO
+========================= */
+
 .center {
-  grid-row: 2 / 6;
-  grid-column: 2 / 8;
+  grid-row:
+    2 / 6;
 
-  display: flex;
+  grid-column:
+    2 / 8;
 
-  flex-direction: column;
+  display:
+    flex;
 
-  justify-content: center;
-  align-items: center;
+  flex-direction:
+    column;
 
-  text-align: center;
+  justify-content:
+    center;
 
-  padding: 30px;
+  align-items:
+    center;
+
+  text-align:
+    center;
+
+  padding:
+    30px;
 }
 
 .logo.big {
-  font-size: 42px;
+  font-size:
+    42px;
+}
+
+
+/* =========================
+   DADO
+========================= */
+
+.diceMessage {
+  min-height:
+    24px;
+
+  margin-top:
+    10px;
+
+  font-weight:
+    800;
+
+  color:
+    #5f5875;
 }
 
 #die {
-  font-size: 80px;
+  font-size:
+    86px;
 
-  margin: 15px;
+  line-height:
+    1;
+
+  margin:
+    14px;
+
+  transform-origin:
+    center;
+}
+
+
+/* ANIMACIÓN DEL DADO */
+
+#die.rolling {
+  animation:
+    diceShake
+    0.14s
+    linear
+    infinite;
+}
+
+@keyframes diceShake {
+
+  0% {
+    transform:
+      rotate(-10deg)
+      scale(1);
+  }
+
+  25% {
+    transform:
+      rotate(8deg)
+      scale(1.10);
+  }
+
+  50% {
+    transform:
+      rotate(-5deg)
+      scale(0.96);
+  }
+
+  75% {
+    transform:
+      rotate(12deg)
+      scale(1.08);
+  }
+
+  100% {
+    transform:
+      rotate(-10deg)
+      scale(1);
+  }
+
 }
 
 #turnText {
-  margin-top: 15px;
+  margin-top:
+    15px;
 
-  font-size: 18px;
-  font-weight: bold;
+  font-size:
+    18px;
+
+  font-weight:
+    bold;
 }
+
+
+/* =========================
+   FICHAS
+========================= */
 
 .piece {
-  width: 20px;
-  height: 20px;
+  width:
+    22px;
 
-  border-radius: 50%;
+  height:
+    22px;
 
-  border: 3px solid white;
+  border-radius:
+    50%;
+
+  border:
+    3px solid white;
 
   box-shadow:
-    0 0 0 2px #302850;
+    0 0 0 2px
+    #302850;
 
-  z-index: 5;
+  z-index:
+    5;
+
+  transition:
+    transform
+    0.16s ease;
 }
 
 
-/* PANEL LATERAL */
+/* SALTO DE LA FICHA */
+
+.piece.moving {
+  animation:
+    pieceHop
+    0.32s
+    ease;
+}
+
+@keyframes pieceHop {
+
+  0% {
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+  45% {
+    transform:
+      translateY(-14px)
+      scale(1.20);
+  }
+
+  100% {
+    transform:
+      translateY(0)
+      scale(1);
+  }
+
+}
+
+
+/* CASILLA FINAL */
+
+.space.landed {
+  animation:
+    landedPulse
+    0.65s
+    ease;
+}
+
+@keyframes landedPulse {
+
+  0% {
+    box-shadow:
+      inset 0 0 0 0
+      #302850;
+  }
+
+  45% {
+    box-shadow:
+      inset 0 0 0 5px
+      #302850;
+  }
+
+  100% {
+    box-shadow:
+      inset 0 0 0 0
+      #302850;
+  }
+
+}
+
+
+/* =========================
+   JUGADORES
+========================= */
 
 .side {
-  padding: 25px;
+  padding:
+    25px;
 }
 
 .side h2 {
-  margin-top: 0;
+  margin-top:
+    0;
 }
 
 .player {
-  display: flex;
+  display:
+    flex;
 
-  align-items: center;
+  align-items:
+    center;
 
-  gap: 12px;
+  gap:
+    12px;
 
-  padding: 12px;
+  padding:
+    12px;
 
-  margin-bottom: 10px;
+  margin-bottom:
+    10px;
 
-  background: white;
+  background:
+    white;
 
-  border-radius: 15px;
+  border-radius:
+    15px;
 
-  border: 2px solid transparent;
+  border:
+    2px solid
+    transparent;
 }
 
 .player.active {
-  border-color: #302850;
+  border-color:
+    #302850;
 
-  box-shadow: 0 4px 0 #302850;
+  box-shadow:
+    0 4px 0
+    #302850;
 }
 
 .player .token {
-  width: 30px;
-  height: 30px;
+  width:
+    30px;
+
+  height:
+    30px;
 }
 
 .side button {
-  width: 100%;
+  width:
+    100%;
 
-  margin-top: 12px;
+  margin-top:
+    12px;
 }
 
 .secondary {
-  background: #ebe7f3;
+  background:
+    #ebe7f3;
 
-  color: #302850;
+  color:
+    #302850;
 }
 
 
-/* MODALES */
+/* =========================
+   MODALES
+========================= */
 
 .modal {
-  position: fixed;
+  position:
+    fixed;
 
-  inset: 0;
+  inset:
+    0;
 
-  background: rgba(28, 22, 55, 0.55);
+  background:
+    rgba(
+      28,
+      22,
+      55,
+      0.55
+    );
 
-  display: flex;
+  display:
+    flex;
 
-  align-items: center;
-  justify-content: center;
+  align-items:
+    center;
 
-  padding: 25px;
+  justify-content:
+    center;
 
-  z-index: 1000;
+  padding:
+    25px;
+
+  z-index:
+    1000;
 }
 
 .modalcard {
-  width: min(650px, 95vw);
+  width:
+    min(650px, 95vw);
 
-  max-height: 90vh;
+  max-height:
+    90vh;
 
-  overflow-y: auto;
+  overflow-y:
+    auto;
 
-  background: #fffdf8;
+  background:
+    #fffdf8;
 
-  border: 3px solid #302850;
+  border:
+    3px solid
+    #302850;
 
-  border-radius: 25px;
+  border-radius:
+    25px;
 
-  box-shadow: 0 12px 0 #302850;
+  box-shadow:
+    0 12px 0
+    #302850;
 
-  padding: 35px;
+  padding:
+    35px;
 
-  position: relative;
+  position:
+    relative;
+
+  animation:
+    modalPop
+    0.22s
+    ease;
+}
+
+@keyframes modalPop {
+
+  from {
+    transform:
+      scale(0.92);
+
+    opacity:
+      0;
+  }
+
+  to {
+    transform:
+      scale(1);
+
+    opacity:
+      1;
+  }
+
 }
 
 .modalcard.wide {
-  width: min(1000px, 95vw);
+  width:
+    min(1000px, 95vw);
 }
 
 .modalcard h2 {
-  font-family: Georgia, serif;
+  font-family:
+    Georgia,
+    serif;
 }
 
 #answerStatus {
-  margin-top: 15px;
+  margin-top:
+    15px;
 
-  color: #706a79;
+  color:
+    #706a79;
 
-  font-weight: bold;
+  font-weight:
+    bold;
 }
 
 #revealed {
-  margin-top: 25px;
+  margin-top:
+    25px;
 }
 
 .answerCard {
-  background: white;
+  background:
+    white;
 
-  border: 3px solid #ded9ea;
+  border:
+    3px solid
+    #ded9ea;
 
-  border-radius: 16px;
+  border-radius:
+    16px;
 
-  padding: 15px;
+  padding:
+    15px;
 
-  margin-bottom: 12px;
+  margin-bottom:
+    12px;
 
-  text-align: left;
+  text-align:
+    left;
 }
 
 #continueBtn {
-  width: 100%;
+  width:
+    100%;
 
-  margin-top: 15px;
+  margin-top:
+    15px;
 }
 
 .x {
-  position: absolute;
+  position:
+    absolute;
 
-  right: 20px;
-  top: 15px;
+  right:
+    20px;
 
-  background: transparent;
+  top:
+    15px;
 
-  color: #302850;
+  background:
+    transparent;
 
-  font-size: 30px;
+  color:
+    #302850;
 
-  padding: 5px;
+  font-size:
+    30px;
+
+  padding:
+    5px;
 }
 
 .section {
-  margin-top: 30px;
+  margin-top:
+    30px;
 }
 
 .section h3 {
-  border-bottom: 2px solid #ded9ea;
+  border-bottom:
+    2px solid
+    #ded9ea;
 
-  padding-bottom: 8px;
+  padding-bottom:
+    8px;
 }
 
 
-/* TOAST */
+/* =========================
+   TOAST
+========================= */
 
 #toast {
-  position: fixed;
+  position:
+    fixed;
 
-  top: 20px;
-  left: 50%;
+  top:
+    20px;
 
-  transform: translateX(-50%);
+  left:
+    50%;
 
-  background: #302850;
+  transform:
+    translateX(-50%);
 
-  color: white;
+  background:
+    #302850;
 
-  padding: 13px 20px;
+  color:
+    white;
 
-  border-radius: 12px;
+  padding:
+    13px 20px;
 
-  z-index: 5000;
+  border-radius:
+    12px;
 
-  display: none;
+  z-index:
+    5000;
 
-  font-weight: bold;
+  display:
+    none;
+
+  font-weight:
+    bold;
 }
 
 
-/* RESPONSIVE */
+/* =========================
+   RESPONSIVE
+========================= */
 
 @media (max-width: 950px) {
 
   .layout {
-    grid-template-columns: 1fr;
+    grid-template-columns:
+      1fr;
   }
 
   .board {
-    min-height: 600px;
+    min-height:
+      600px;
   }
 
 }
@@ -590,28 +1037,34 @@ textarea {
 @media (max-width: 700px) {
 
   .homegrid {
-    grid-template-columns: 1fr;
+    grid-template-columns:
+      1fr;
   }
 
   .hero,
   .lobby {
-    padding: 25px;
+    padding:
+      25px;
   }
 
   .hero h1 {
-    font-size: 32px;
+    font-size:
+      32px;
   }
 
   .logo {
-    font-size: 25px;
+    font-size:
+      25px;
   }
 
   .layout {
-    width: 100%;
+    width:
+      100%;
   }
 
   .board {
-    min-height: 500px;
+    min-height:
+      500px;
   }
 
 }
