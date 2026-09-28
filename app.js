@@ -1,114 +1,875 @@
-import {initializeApp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import {getDatabase,ref,set,get,update,onValue,push,remove} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {
+  getDatabase,
+  ref,
+  set,
+  get,
+  update,
+  onValue,
+  push
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-const firebaseConfig={
- apiKey:"AIzaSyDoo5RbGkMXhMIiursEXhj7jG8tN_QkmrE",
- authDomain:"sprintopoly-74ccd.firebaseapp.com",
- databaseURL:"https://sprintopoly-74ccd-default-rtdb.firebaseio.com",
- projectId:"sprintopoly-74ccd",
- storageBucket:"sprintopoly-74ccd.firebasestorage.app",
- messagingSenderId:"235505202765",
- appId:"1:235505202765:web:f676ec5d971b020c3d4e04"
+const firebaseConfig = {
+  apiKey: "AIzaSyDoo5RbGkMXhMIiursEXhj7jG8tN_QkmrE",
+  authDomain: "sprintopoly-74ccd.firebaseapp.com",
+  databaseURL: "https://sprintopoly-74ccd-default-rtdb.firebaseio.com",
+  projectId: "sprintopoly-74ccd",
+  storageBucket: "sprintopoly-74ccd.firebasestorage.app",
+  messagingSenderId: "235505202765",
+  appId: "1:235505202765:web:f676ec5d971b020c3d4e04"
 };
-const db=getDatabase(initializeApp(firebaseConfig));
-const $=id=>document.getElementById(id), colors=["#ff4f78","#3d9cff","#32c66d","#ff9d27","#9258ee"];
-let room="",me="",isHost=false,state=null,unsub=null;
-const spaces=[
-["SALIDA","🏁","#ffd4e2"],["EMPEZAR","●","#b8efca"],["PARAR","●","#ffc0c0"],["CONTINUAR","●","#ffd9a5"],["KUDOS","●","#b9d8fb"],["SORPRESA","●","#d8c3fa"],["OTRA VEZ","●","#fff0a0"],["EMPEZAR","●","#b8efca"],
-["PARAR","●","#ffc0c0"],["KUDOS","●","#b9d8fb"],["CONTINUAR","●","#ffd9a5"],["SORPRESA","●","#d8c3fa"],["EMPEZAR","●","#b8efca"],
-["OTRA VEZ","●","#fff0a0"],["PARAR","●","#ffc0c0"],["CONTINUAR","●","#ffd9a5"],["KUDOS","●","#b9d8fb"],["SORPRESA","●","#d8c3fa"],["EMPEZAR","●","#b8efca"],["SORPRESA","●","#d8c3fa"],["KUDOS","●","#b9d8fb"],["OTRA VEZ","●","#fff0a0"],["CONTINUAR","●","#ffd9a5"],["PARAR","●","#ffc0c0"]
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const $ = id => document.getElementById(id);
+
+const colors = [
+  "#ff4f78",
+  "#3d9cff",
+  "#32c66d",
+  "#ff9d27",
+  "#9258ee"
 ];
-const prompts={
-EMPEZAR:["EMPEZAR","¿Qué deberíamos comenzar a hacer como equipo?"],
-PARAR:["PARAR","¿Qué deberíamos dejar de hacer?"],
-CONTINUAR:["CONTINUAR","¿Qué funcionó bien y deberíamos continuar haciendo?"],
-KUDOS:["KUDOS","Reconoce algo concreto que hizo bien otra persona del equipo."]
+
+let room = "";
+let me = "";
+let state = null;
+
+/* =====================================================
+   TABLERO
+===================================================== */
+
+const spaces = [
+  ["SALIDA", "🏁", "#ffd4e2"],
+  ["EMPEZAR", "●", "#b8efca"],
+  ["PARAR", "●", "#ffc0c0"],
+  ["CONTINUAR", "●", "#ffd9a5"],
+  ["KUDOS", "●", "#b9d8fb"],
+  ["SORPRESA", "●", "#d8c3fa"],
+  ["OTRA VEZ", "●", "#fff0a0"],
+  ["EMPEZAR", "●", "#b8efca"],
+
+  ["PARAR", "●", "#ffc0c0"],
+  ["KUDOS", "●", "#b9d8fb"],
+  ["CONTINUAR", "●", "#ffd9a5"],
+  ["SORPRESA", "●", "#d8c3fa"],
+  ["EMPEZAR", "●", "#b8efca"],
+
+  ["OTRA VEZ", "●", "#fff0a0"],
+  ["PARAR", "●", "#ffc0c0"],
+  ["CONTINUAR", "●", "#ffd9a5"],
+  ["KUDOS", "●", "#b9d8fb"],
+  ["SORPRESA", "●", "#d8c3fa"],
+  ["EMPEZAR", "●", "#b8efca"],
+  ["SORPRESA", "●", "#d8c3fa"],
+  ["KUDOS", "●", "#b9d8fb"],
+  ["OTRA VEZ", "●", "#fff0a0"],
+  ["CONTINUAR", "●", "#ffd9a5"],
+  ["PARAR", "●", "#ffc0c0"]
+];
+
+/* =====================================================
+   PREGUNTAS
+===================================================== */
+
+const prompts = {
+  EMPEZAR: [
+    "EMPEZAR",
+    "¿Qué deberíamos comenzar a hacer como equipo?"
+  ],
+
+  PARAR: [
+    "PARAR",
+    "¿Qué deberíamos dejar de hacer?"
+  ],
+
+  CONTINUAR: [
+    "CONTINUAR",
+    "¿Qué funcionó bien y deberíamos continuar haciendo?"
+  ],
+
+  KUDOS: [
+    "KUDOS",
+    "Reconoce algo concreto que hizo bien otra persona del equipo."
+  ]
 };
-const surprises=[
-["🐞 BUG INESPERADO","¿Qué fue lo más inesperado que ocurrió durante este Sprint?"],
-["👾 JEFE FINAL","¿Cuál fue el mayor obstáculo del Sprint?"],
-["⚡ POWER-UP","¿Qué hizo que el trabajo fluyera mejor?"],
-["↩️ CTRL + Z","Si pudieras deshacer una decisión del Sprint, ¿cuál sería?"],
-["🔐 NIVEL SECRETO","¿Qué aprendizaje obtuvimos que no esperábamos?"],
-["🔥 MODO DIFÍCIL","¿Qué fue más complicado de lo esperado?"],
-["🎁 BONUS","¿Qué salió bien y casi nadie reconoció?"],
-["🧩 DEUDA TÉCNICA","¿Qué estamos posponiendo y deberíamos atender?"],
-["🧭 CAMBIO DE RUMBO","¿Qué haríamos diferente si repitiéramos este Sprint?"],
-["🎲 SUERTE","¿Qué momento del Sprint te gustaría destacar?"]
+
+const surprises = [
+  [
+    "🐞 BUG INESPERADO",
+    "¿Qué fue lo más inesperado que ocurrió durante este Sprint?"
+  ],
+  [
+    "👾 JEFE FINAL",
+    "¿Cuál fue el mayor obstáculo del Sprint?"
+  ],
+  [
+    "⚡ POWER-UP",
+    "¿Qué hizo que el trabajo fluyera mejor?"
+  ],
+  [
+    "↩️ CTRL + Z",
+    "Si pudieras deshacer una decisión del Sprint, ¿cuál sería?"
+  ],
+  [
+    "🔐 NIVEL SECRETO",
+    "¿Qué aprendizaje obtuvimos que no esperábamos?"
+  ],
+  [
+    "🔥 MODO DIFÍCIL",
+    "¿Qué fue más complicado de lo esperado?"
+  ],
+  [
+    "🎁 BONUS",
+    "¿Qué salió bien y casi nadie reconoció?"
+  ],
+  [
+    "🧩 DEUDA TÉCNICA",
+    "¿Qué estamos posponiendo y deberíamos atender?"
+  ],
+  [
+    "🧭 CAMBIO DE RUMBO",
+    "¿Qué haríamos diferente si repitiéramos este Sprint?"
+  ],
+  [
+    "🎲 SUERTE",
+    "¿Qué momento del Sprint te gustaría destacar?"
+  ]
 ];
-function code(){return Math.random().toString(36).slice(2,7).toUpperCase()}
-function toast(t){$("toast").textContent=t;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2500)}
-function show(id){["home","lobby","game"].forEach(x=>$(x).classList.add("hidden"));$(id).classList.remove("hidden")}
-async function createRoom(){
- let name=$("hostName").value.trim(); if(!name)return toast("Escribe tu nombre");
- room=code(); me=crypto.randomUUID(); isHost=true;
- await set(ref(db,"rooms/"+room),{host:me,status:"lobby",turn:0,players:{[me]:{name,color:colors[0],pos:0,order:0}},round:null});
- localStorage.setItem("sp_me",me); listen(); show("lobby")
+
+/* =====================================================
+   UTILIDADES
+===================================================== */
+
+function code() {
+  return Math.random()
+    .toString(36)
+    .slice(2, 7)
+    .toUpperCase();
 }
-async function joinRoom(){
- let name=$("joinName").value.trim(),c=$("roomCode").value.trim().toUpperCase(); if(!name||!c)return toast("Completa nombre y código");
- let snap=await get(ref(db,"rooms/"+c)); if(!snap.exists())return toast("Sala no encontrada");
- let data=snap.val(), ps=Object.values(data.players||{}); if(ps.length>=5)return toast("La sala ya está llena");
- room=c; me=crypto.randomUUID(); isHost=false; let used=ps.map(p=>p.order),ord=[0,1,2,3,4].find(x=>!used.includes(x));
- await set(ref(db,`rooms/${room}/players/${me}`),{name,color:colors[ord],pos:0,order:ord});
- localStorage.setItem("sp_me",me); listen(); show("lobby")
+
+function toast(text) {
+  $("toast").textContent = text;
+  $("toast").style.display = "block";
+
+  setTimeout(() => {
+    $("toast").style.display = "none";
+  }, 2500);
 }
-function listen(){onValue(ref(db,"rooms/"+room),s=>{if(!s.exists())return;state=s.val();render()})}
-function sortedPlayers(){return Object.entries(state?.players||{}).sort((a,b)=>a[1].order-b[1].order)}
-function render(){
- $("lobbyCode").textContent=room; let ps=sortedPlayers(); $("count").textContent=`${ps.length}/5 jugadores`;
- $("lobbyPlayers").innerHTML=ps.map(([id,p])=>`<div class="lobbyPlayer"><span class="token" style="background:${p.color}"></span><b>${esc(p.name)}</b>${id===state.host?" 👑":""}</div>`).join("");
- $("startBtn").classList.toggle("hidden",!(isHost&&ps.length===5));
- if(state.status==="game"){show("game");drawBoard();renderPlayers();renderRound()}
+
+function show(id) {
+  ["home", "lobby", "game"].forEach(screen => {
+    $(screen).classList.add("hidden");
+  });
+
+  $(id).classList.remove("hidden");
 }
-function drawBoard(){
- const b=$("board"); b.querySelectorAll(".space,.piece").forEach(e=>e.remove());
- const coords=[]; for(let c=1;c<=8;c++)coords.push([1,c]); for(let r=2;r<=6;r++)coords.push([r,8]); for(let c=7;c>=1;c--)coords.push([6,c]); for(let r=5;r>=2;r--)coords.push([r,1]);
- spaces.forEach((s,i)=>{let d=document.createElement("div");d.className="space";d.style.gridRow=coords[i][0];d.style.gridColumn=coords[i][1];d.style.background=s[2];d.innerHTML=`<span class="dot">${s[1]}</span><span>${s[0]}</span>`;b.appendChild(d)});
- sortedPlayers().forEach(([id,p],j)=>{let pos=coords[p.pos%spaces.length],d=document.createElement("div");d.className="piece";d.style.background=p.color;d.style.gridRow=pos[0];d.style.gridColumn=pos[1];d.style.alignSelf="end";d.style.justifySelf="start";d.style.margin=`0 0 ${5+(j%2)*24}px ${5+Math.floor(j/2)*24}px`;b.appendChild(d)})
+
+function amIHost() {
+  return !!state && state.host === me;
 }
-function renderPlayers(){
- let ps=sortedPlayers(), current=ps[state.turn%ps.length];
- $("players").innerHTML=ps.map(([id,p],i)=>`<div class="player ${i===state.turn?"active":""}"><span class="token" style="background:${p.color}"></span><div><b>${esc(p.name)}</b><br><small>Casilla ${p.pos} · ${spaces[p.pos][0]}</small></div></div>`).join("");
- $("turnText").textContent=current?`Turno de ${current[1].name}`:"";
- $("rollBtn").disabled=!current||current[0]!==me||!!state.round;
- document.querySelectorAll(".hostOnly").forEach(x=>x.style.display=isHost?"block":"none")
+
+/* =====================================================
+   CREAR SALA
+===================================================== */
+
+async function createRoom() {
+  const name = $("hostName").value.trim();
+
+  if (!name) {
+    toast("Escribe tu nombre");
+    return;
+  }
+
+  room = code();
+  me = crypto.randomUUID();
+
+  await set(ref(db, "rooms/" + room), {
+    host: me,
+    status: "lobby",
+    turn: 0,
+
+    players: {
+      [me]: {
+        name: name,
+        color: colors[0],
+        pos: 0,
+        order: 0
+      }
+    },
+
+    round: null
+  });
+
+  localStorage.setItem("sp_me", me);
+
+  listen();
+  show("lobby");
 }
-async function roll(){
- let ps=sortedPlayers(),cur=ps[state.turn]; if(!cur||cur[0]!==me||state.round)return;
- $("rollBtn").disabled=true; let n=1+Math.floor(Math.random()*6); $("die").textContent=["⚀","⚁","⚂","⚃","⚄","⚅"][n-1];
- let newPos=(cur[1].pos+n)%spaces.length,type=spaces[newPos][0];
- await update(ref(db,`rooms/${room}/players/${me}`),{pos:newPos});
- if(type==="OTRA VEZ"){toast(`${cur[1].name} tira otra vez`);return}
- if(type==="SALIDA"){await nextTurn();return}
- let q= type==="SORPRESA"?surprises[Math.floor(Math.random()*surprises.length)]:prompts[type];
- await set(ref(db,`rooms/${room}/round`),{type,title:q[0],question:q[1],answers:{},roller:me});
+
+/* =====================================================
+   UNIRSE A SALA
+===================================================== */
+
+async function joinRoom() {
+  const name = $("joinName").value.trim();
+  const enteredCode = $("roomCode")
+    .value
+    .trim()
+    .toUpperCase();
+
+  if (!name || !enteredCode) {
+    toast("Completa nombre y código");
+    return;
+  }
+
+  const snapshot = await get(
+    ref(db, "rooms/" + enteredCode)
+  );
+
+  if (!snapshot.exists()) {
+    toast("Sala no encontrada");
+    return;
+  }
+
+  const data = snapshot.val();
+  const players = Object.values(data.players || {});
+
+  if (players.length >= 5) {
+    toast("La sala ya está llena");
+    return;
+  }
+
+  if (data.status !== "lobby") {
+    toast("La partida ya comenzó");
+    return;
+  }
+
+  room = enteredCode;
+  me = crypto.randomUUID();
+
+  const usedOrders = players.map(player => player.order);
+
+  const order = [0, 1, 2, 3, 4]
+    .find(number => !usedOrders.includes(number));
+
+  await set(
+    ref(db, `rooms/${room}/players/${me}`),
+    {
+      name: name,
+      color: colors[order],
+      pos: 0,
+      order: order
+    }
+  );
+
+  localStorage.setItem("sp_me", me);
+
+  listen();
+  show("lobby");
 }
-function renderRound(){
- if(!state.round){$("promptModal").classList.add("hidden");return}
- let r=state.round; $("promptModal").classList.remove("hidden"); $("promptTitle").textContent=r.title;$("promptQuestion").textContent=r.question;
- let answers=r.answers||{}, mine=answers[me]; $("answer").classList.toggle("hidden",!!mine);$("submitAnswer").classList.toggle("hidden",!!mine);
- $("answerStatus").textContent=`${Object.keys(answers).length}/${sortedPlayers().length} respuestas recibidas`;
- let all=Object.keys(answers).length===sortedPlayers().length;
- $("revealed").classList.toggle("hidden",!all); $("continueBtn").classList.toggle("hidden",!(all&&isHost));
- if(all)$("revealed").innerHTML=sortedPlayers().map(([id,p])=>`<div class="answerCard" style="border-color:${p.color}"><b>${esc(p.name)}</b><br>${esc(answers[id]||"")}</div>`).join("")
+
+/* =====================================================
+   FIREBASE EN TIEMPO REAL
+===================================================== */
+
+function listen() {
+  onValue(ref(db, "rooms/" + room), snapshot => {
+
+    if (!snapshot.exists()) {
+      toast("La sala ya no existe");
+      return;
+    }
+
+    state = snapshot.val();
+
+    render();
+  });
 }
-async function submitAnswer(){
- let v=$("answer").value.trim();if(!v)return toast("Escribe una respuesta");
- await set(ref(db,`rooms/${room}/round/answers/${me}`),v);$("answer").value=""
+
+/* =====================================================
+   JUGADORES ORDENADOS
+===================================================== */
+
+function sortedPlayers() {
+  return Object.entries(state?.players || {})
+    .sort((a, b) => a[1].order - b[1].order);
 }
-async function nextTurn(){let ps=sortedPlayers();await update(ref(db,"rooms/"+room),{turn:(state.turn+1)%ps.length,round:null})}
-async function continueRound(){
- let r=state.round;if(!r)return;
- let key=push(ref(db,`rooms/${room}/history`)).key;
- await set(ref(db,`rooms/${room}/history/${key}`),r);await nextTurn()
+
+/* =====================================================
+   RENDER GENERAL
+===================================================== */
+
+function render() {
+  if (!state) return;
+
+  const players = sortedPlayers();
+
+  $("lobbyCode").textContent = room;
+
+  $("count").textContent =
+    `${players.length}/5 jugadores`;
+
+  $("lobbyPlayers").innerHTML = players
+    .map(([id, player]) => `
+      <div class="lobbyPlayer">
+
+        <span
+          class="token"
+          style="background:${player.color}">
+        </span>
+
+        <b>${esc(player.name)}</b>
+
+        ${id === state.host ? " 👑" : ""}
+
+      </div>
+    `)
+    .join("");
+
+  /* ===============================================
+     BOTÓN COMENZAR
+     Solo lo ve el host.
+     Se puede comenzar desde 2 jugadores.
+  =============================================== */
+
+  const canStart =
+    amIHost() &&
+    players.length >= 2 &&
+    players.length <= 5 &&
+    state.status === "lobby";
+
+  $("startBtn").classList.toggle(
+    "hidden",
+    !canStart
+  );
+
+  if (state.status === "game") {
+    show("game");
+
+    drawBoard();
+    renderPlayers();
+    renderRound();
+  }
 }
-async function start(){await update(ref(db,"rooms/"+room),{status:"game",turn:0})}
-async function reset(){if(confirm("¿Reiniciar posiciones y respuestas?")){let ups={turn:0,round:null,history:null};sortedPlayers().forEach(([id])=>ups[`players/${id}/pos`]=0);await update(ref(db,"rooms/"+room),ups)}}
-function summary(){
- $("summaryModal").classList.remove("hidden");let h=state.history||{}, groups={EMPEZAR:[],PARAR:[],CONTINUAR:[],KUDOS:[],SORPRESA:[]};
- Object.values(h).forEach(r=>{let g=groups[r.type]||groups.SORPRESA;Object.values(r.answers||{}).forEach(a=>g.push(a))});
- $("summaryContent").innerHTML=Object.entries(groups).map(([k,v])=>`<div class="section"><h3>${k}</h3>${v.length?v.map(x=>`<div class="answerCard">${esc(x)}</div>`).join(""):"<p class='muted'>Sin respuestas todavía.</p>"}</div>`).join("")
+
+/* =====================================================
+   DIBUJAR TABLERO
+===================================================== */
+
+function drawBoard() {
+  const board = $("board");
+
+  board
+    .querySelectorAll(".space,.piece")
+    .forEach(element => element.remove());
+
+  const coords = [];
+
+  for (let column = 1; column <= 8; column++) {
+    coords.push([1, column]);
+  }
+
+  for (let row = 2; row <= 6; row++) {
+    coords.push([row, 8]);
+  }
+
+  for (let column = 7; column >= 1; column--) {
+    coords.push([6, column]);
+  }
+
+  for (let row = 5; row >= 2; row--) {
+    coords.push([row, 1]);
+  }
+
+  spaces.forEach((space, index) => {
+
+    const element = document.createElement("div");
+
+    element.className = "space";
+
+    element.style.gridRow = coords[index][0];
+    element.style.gridColumn = coords[index][1];
+    element.style.background = space[2];
+
+    element.innerHTML = `
+      <span class="dot">${space[1]}</span>
+      <span>${space[0]}</span>
+    `;
+
+    board.appendChild(element);
+  });
+
+  sortedPlayers().forEach(([id, player], index) => {
+
+    const position =
+      coords[player.pos % spaces.length];
+
+    const piece =
+      document.createElement("div");
+
+    piece.className = "piece";
+    piece.style.background = player.color;
+
+    piece.style.gridRow = position[0];
+    piece.style.gridColumn = position[1];
+
+    piece.style.alignSelf = "end";
+    piece.style.justifySelf = "start";
+
+    piece.style.margin =
+      `0 0 ${5 + (index % 2) * 24}px ` +
+      `${5 + Math.floor(index / 2) * 24}px`;
+
+    board.appendChild(piece);
+  });
 }
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]))}
-$("createBtn").onclick=createRoom;$("joinBtn").onclick=joinRoom;$("startBtn").onclick=start;$("rollBtn").onclick=roll;$("submitAnswer").onclick=submitAnswer;$("continueBtn").onclick=continueRound;$("resetBtn").onclick=reset;$("summaryBtn").onclick=summary;$("closeSummary").onclick=()=>$("summaryModal").classList.add("hidden");
+
+/* =====================================================
+   PANEL DE JUGADORES
+===================================================== */
+
+function renderPlayers() {
+  const players = sortedPlayers();
+
+  if (!players.length) return;
+
+  const current =
+    players[state.turn % players.length];
+
+  $("players").innerHTML = players
+    .map(([id, player], index) => `
+      <div class="player ${
+        index === state.turn % players.length
+          ? "active"
+          : ""
+      }">
+
+        <span
+          class="token"
+          style="background:${player.color}">
+        </span>
+
+        <div>
+          <b>${esc(player.name)}</b>
+          <br>
+
+          <small>
+            Casilla ${player.pos} ·
+            ${spaces[player.pos][0]}
+          </small>
+        </div>
+
+      </div>
+    `)
+    .join("");
+
+  $("turnText").textContent =
+    current
+      ? `Turno de ${current[1].name}`
+      : "";
+
+  $("rollBtn").disabled =
+    !current ||
+    current[0] !== me ||
+    !!state.round;
+
+  document
+    .querySelectorAll(".hostOnly")
+    .forEach(element => {
+
+      element.style.display =
+        amIHost()
+          ? "block"
+          : "none";
+
+    });
+}
+
+/* =====================================================
+   TIRAR DADO
+===================================================== */
+
+async function roll() {
+  const players = sortedPlayers();
+
+  if (!players.length) return;
+
+  const current =
+    players[state.turn % players.length];
+
+  if (
+    !current ||
+    current[0] !== me ||
+    state.round
+  ) {
+    return;
+  }
+
+  $("rollBtn").disabled = true;
+
+  const number =
+    1 + Math.floor(Math.random() * 6);
+
+  $("die").textContent =
+    ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"]
+      [number - 1];
+
+  const newPosition =
+    (current[1].pos + number) %
+    spaces.length;
+
+  const type =
+    spaces[newPosition][0];
+
+  await update(
+    ref(db, `rooms/${room}/players/${me}`),
+    {
+      pos: newPosition
+    }
+  );
+
+  /* OTRA VEZ */
+
+  if (type === "OTRA VEZ") {
+    toast(`${current[1].name} tira otra vez`);
+    return;
+  }
+
+  /* SALIDA */
+
+  if (type === "SALIDA") {
+    await nextTurn();
+    return;
+  }
+
+  /* PREGUNTA */
+
+  let question;
+
+  if (type === "SORPRESA") {
+    question =
+      surprises[
+        Math.floor(
+          Math.random() * surprises.length
+        )
+      ];
+  } else {
+    question = prompts[type];
+  }
+
+  if (!question) {
+    await nextTurn();
+    return;
+  }
+
+  await set(
+    ref(db, `rooms/${room}/round`),
+    {
+      type: type,
+      title: question[0],
+      question: question[1],
+      answers: {},
+      roller: me
+    }
+  );
+}
+
+/* =====================================================
+   RONDA / RESPUESTAS
+===================================================== */
+
+function renderRound() {
+  if (!state.round) {
+    $("promptModal").classList.add("hidden");
+    return;
+  }
+
+  const round = state.round;
+
+  $("promptModal").classList.remove("hidden");
+
+  $("promptTitle").textContent =
+    round.title;
+
+  $("promptQuestion").textContent =
+    round.question;
+
+  const answers =
+    round.answers || {};
+
+  const myAnswer =
+    answers[me];
+
+  $("answer").classList.toggle(
+    "hidden",
+    !!myAnswer
+  );
+
+  $("submitAnswer").classList.toggle(
+    "hidden",
+    !!myAnswer
+  );
+
+  const players = sortedPlayers();
+
+  $("answerStatus").textContent =
+    `${Object.keys(answers).length}/` +
+    `${players.length} respuestas recibidas`;
+
+  const allAnswered =
+    Object.keys(answers).length ===
+    players.length;
+
+  $("revealed").classList.toggle(
+    "hidden",
+    !allAnswered
+  );
+
+  $("continueBtn").classList.toggle(
+    "hidden",
+    !(allAnswered && amIHost())
+  );
+
+  if (allAnswered) {
+    $("revealed").innerHTML =
+      players
+        .map(([id, player]) => `
+          <div
+            class="answerCard"
+            style="border-color:${player.color}">
+
+            <b>${esc(player.name)}</b>
+            <br>
+
+            ${esc(answers[id] || "")}
+
+          </div>
+        `)
+        .join("");
+  }
+}
+
+/* =====================================================
+   ENVIAR RESPUESTA
+===================================================== */
+
+async function submitAnswer() {
+  const value =
+    $("answer").value.trim();
+
+  if (!value) {
+    toast("Escribe una respuesta");
+    return;
+  }
+
+  await set(
+    ref(
+      db,
+      `rooms/${room}/round/answers/${me}`
+    ),
+    value
+  );
+
+  $("answer").value = "";
+}
+
+/* =====================================================
+   SIGUIENTE TURNO
+===================================================== */
+
+async function nextTurn() {
+  const players = sortedPlayers();
+
+  if (!players.length) return;
+
+  const next =
+    (state.turn + 1) % players.length;
+
+  await update(
+    ref(db, "rooms/" + room),
+    {
+      turn: next,
+      round: null
+    }
+  );
+}
+
+/* =====================================================
+   CONTINUAR DESPUÉS DE RESPUESTAS
+===================================================== */
+
+async function continueRound() {
+  if (!amIHost()) return;
+
+  const round = state.round;
+
+  if (!round) return;
+
+  const historyRef =
+    push(ref(db, `rooms/${room}/history`));
+
+  await set(historyRef, round);
+
+  await nextTurn();
+}
+
+/* =====================================================
+   INICIAR JUEGO
+===================================================== */
+
+async function start() {
+  if (!state) return;
+
+  if (!amIHost()) {
+    toast("Solo el anfitrión puede iniciar");
+    return;
+  }
+
+  const players = sortedPlayers();
+
+  if (players.length < 2) {
+    toast("Se necesitan al menos 2 jugadores");
+    return;
+  }
+
+  await update(
+    ref(db, "rooms/" + room),
+    {
+      status: "game",
+      turn: 0,
+      round: null
+    }
+  );
+}
+
+/* =====================================================
+   REINICIAR
+===================================================== */
+
+async function reset() {
+  if (!amIHost()) return;
+
+  if (
+    !confirm(
+      "¿Reiniciar posiciones y respuestas?"
+    )
+  ) {
+    return;
+  }
+
+  const updates = {
+    turn: 0,
+    round: null,
+    history: null
+  };
+
+  sortedPlayers().forEach(([id]) => {
+    updates[`players/${id}/pos`] = 0;
+  });
+
+  await update(
+    ref(db, "rooms/" + room),
+    updates
+  );
+}
+
+/* =====================================================
+   RESUMEN DE LA RETROSPECTIVA
+===================================================== */
+
+function summary() {
+  $("summaryModal")
+    .classList
+    .remove("hidden");
+
+  const history =
+    state.history || {};
+
+  const groups = {
+    EMPEZAR: [],
+    PARAR: [],
+    CONTINUAR: [],
+    KUDOS: [],
+    SORPRESA: []
+  };
+
+  Object.values(history).forEach(round => {
+
+    const group =
+      groups[round.type] ||
+      groups.SORPRESA;
+
+    Object
+      .values(round.answers || {})
+      .forEach(answer => {
+        group.push(answer);
+      });
+
+  });
+
+  $("summaryContent").innerHTML =
+    Object.entries(groups)
+      .map(([type, answers]) => `
+        <div class="section">
+
+          <h3>${type}</h3>
+
+          ${
+            answers.length
+              ? answers
+                  .map(answer => `
+                    <div class="answerCard">
+                      ${esc(answer)}
+                    </div>
+                  `)
+                  .join("")
+              : `
+                <p class="muted">
+                  Sin respuestas todavía.
+                </p>
+              `
+          }
+
+        </div>
+      `)
+      .join("");
+}
+
+/* =====================================================
+   ESCAPAR HTML
+===================================================== */
+
+function esc(value) {
+  return String(value ?? "")
+    .replace(
+      /[&<>"']/g,
+      character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[character]
+    );
+}
+
+/* =====================================================
+   BOTONES
+===================================================== */
+
+$("createBtn").onclick = createRoom;
+$("joinBtn").onclick = joinRoom;
+$("startBtn").onclick = start;
+$("rollBtn").onclick = roll;
+$("submitAnswer").onclick = submitAnswer;
+$("continueBtn").onclick = continueRound;
+$("resetBtn").onclick = reset;
+$("summaryBtn").onclick = summary;
+
+$("closeSummary").onclick = () => {
+  $("summaryModal")
+    .classList
+    .add("hidden");
+};
