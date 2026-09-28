@@ -100,99 +100,393 @@ const spaces = [
    PREGUNTAS
 ===================================================== */
 
+/* =====================================================
+   PREGUNTAS DE RETROSPECTIVA
+   10 POR CATEGORÍA
+===================================================== */
+
 const prompts = {
 
   EMPEZAR: [
-    ["🌱 EMPEZAR", "¿Qué deberíamos comenzar a hacer como equipo en el próximo Sprint?"],
-    ["🚀 NUEVO IMPULSO", "¿Qué práctica nueva podría ayudarnos a trabajar mejor?"],
-    ["💡 NUEVA IDEA", "¿Qué podríamos probar en el próximo Sprint que todavía no hemos intentado?"],
-    ["🛠️ MEJORA", "¿Qué herramienta o recurso deberíamos empezar a utilizar?"],
-    ["🤝 EQUIPO", "¿Qué podríamos empezar a hacer para mejorar la colaboración entre nosotros?"],
-    ["📢 COMUNICACIÓN", "¿Qué deberíamos comenzar a comunicar con mayor claridad?"],
-    ["⏱️ ORGANIZACIÓN", "¿Qué hábito podríamos comenzar a aplicar para organizarnos mejor?"],
-    ["🎯 ENFOQUE", "¿Qué deberíamos comenzar a hacer para tener más claro qué es prioritario?"],
-    ["🧠 APRENDIZAJE", "¿Qué conocimiento o habilidad sería útil comenzar a desarrollar como equipo?"],
-    ["🔍 PREVENCIÓN", "¿Qué podríamos comenzar a revisar antes para detectar problemas con mayor anticipación?"]
+
+    [
+      "🌱 EMPEZAR",
+      "¿Qué deberíamos empezar a hacer en el próximo Sprint?"
+    ],
+
+    [
+      "💡 NUEVA IDEA",
+      "¿Qué podríamos probar en el próximo Sprint para trabajar mejor?"
+    ],
+
+    [
+      "🚀 MEJORA",
+      "¿Qué podríamos hacer diferente en el próximo Sprint?"
+    ],
+
+    [
+      "🤝 EQUIPO",
+      "¿Qué podríamos empezar a hacer para trabajar mejor como equipo?"
+    ],
+
+    [
+      "📢 COMUNICACIÓN",
+      "¿Qué podríamos empezar a hacer para comunicarnos mejor?"
+    ],
+
+    [
+      "🎯 OBJETIVOS",
+      "¿Qué podríamos hacer para tener más claro el objetivo del próximo Sprint?"
+    ],
+
+    [
+      "⏱️ ORGANIZACIÓN",
+      "¿Qué podríamos empezar a hacer para organizarnos mejor?"
+    ],
+
+    [
+      "🧱 PROBLEMAS",
+      "¿Qué podríamos empezar a hacer para evitar los problemas que tuvimos en este Sprint?"
+    ],
+
+    [
+      "🔄 PRÓXIMO SPRINT",
+      "¿Qué cambio te gustaría probar en el próximo Sprint?"
+    ],
+
+    [
+      "✨ UN CAMBIO",
+      "Si pudiéramos implementar una sola mejora para el próximo Sprint, ¿cuál sería?"
+    ]
+
   ],
+
 
   PARAR: [
-    ["🛑 PARAR", "¿Qué deberíamos dejar de hacer porque no está aportando al equipo?"],
-    ["⌛ PÉRDIDA DE TIEMPO", "¿Qué actividad nos hizo perder tiempo durante este Sprint?"],
-    ["🚧 BLOQUEO", "¿Qué comportamiento o proceso nos está dificultando avanzar?"],
-    ["🔁 REPETICIÓN", "¿Qué estamos haciendo repetidamente que podríamos simplificar?"],
-    ["📢 COMUNICACIÓN", "¿Qué forma de comunicarnos está generando confusión y deberíamos cambiar?"],
-    ["📚 SOBRECARGA", "¿Qué estamos haciendo de más sin obtener suficiente beneficio?"],
-    ["🐌 LENTITUD", "¿Qué parte de nuestra forma de trabajar está haciendo que avancemos más lento?"],
-    ["❌ MAL HÁBITO", "¿Qué hábito del equipo deberíamos intentar eliminar?"],
-    ["🎯 DISTRACCIÓN", "¿Qué nos está quitando atención de las tareas realmente importantes?"],
-    ["🧱 OBSTÁCULO", "¿Qué podríamos dejar de hacer para reducir bloqueos en el próximo Sprint?"]
+
+    [
+      "🛑 PARAR",
+      "¿Qué deberíamos dejar de hacer en el próximo Sprint?"
+    ],
+
+    [
+      "😕 SALIÓ MAL",
+      "¿Qué salió mal durante este Sprint?"
+    ],
+
+    [
+      "🚧 PROBLEMA",
+      "¿Qué problema dificultó nuestro trabajo durante este Sprint?"
+    ],
+
+    [
+      "⌛ TIEMPO",
+      "¿Qué nos hizo perder tiempo durante este Sprint?"
+    ],
+
+    [
+      "🐌 RETRASOS",
+      "¿Qué hizo que avanzáramos más lento de lo esperado?"
+    ],
+
+    [
+      "📢 COMUNICACIÓN",
+      "¿Hubo algún problema de comunicación durante este Sprint?"
+    ],
+
+    [
+      "🔁 OTRA VEZ",
+      "¿Qué problema que ya habíamos tenido volvió a repetirse?"
+    ],
+
+    [
+      "📋 ORGANIZACIÓN",
+      "¿Qué no funcionó bien en nuestra organización durante este Sprint?"
+    ],
+
+    [
+      "❌ NO FUNCIONÓ",
+      "¿Qué intentamos durante este Sprint que no funcionó como esperábamos?"
+    ],
+
+    [
+      "🧱 BLOQUEO",
+      "¿Cuál fue el principal bloqueo que tuvimos durante este Sprint?"
+    ]
+
   ],
+
 
   CONTINUAR: [
-    ["🔄 CONTINUAR", "¿Qué funcionó bien y deberíamos continuar haciendo?"],
-    ["✨ FUNCIONÓ", "¿Qué práctica del equipo dio buenos resultados durante este Sprint?"],
-    ["💪 FORTALEZA", "¿Qué estamos haciendo particularmente bien como equipo?"],
-    ["🤝 COLABORACIÓN", "¿Qué forma de trabajar juntos deberíamos mantener?"],
-    ["📢 COMUNICACIÓN", "¿Qué hicimos bien al comunicarnos durante este Sprint?"],
-    ["⚡ FLUJO", "¿Qué ayudó a que el trabajo avanzara con mayor facilidad?"],
-    ["🎯 ORGANIZACIÓN", "¿Qué hicimos bien para mantenernos organizados?"],
-    ["🛠️ HERRAMIENTAS", "¿Qué herramienta o método nos funcionó bien y deberíamos seguir utilizando?"],
-    ["📈 PROGRESO", "¿Qué cambio que hicimos anteriormente está dando buenos resultados?"],
-    ["🧩 EQUIPO", "¿Qué dinámica del equipo te gustaría conservar para el próximo Sprint?"]
+
+    [
+      "🔄 CONTINUAR",
+      "¿Qué salió bien durante este Sprint y deberíamos seguir haciendo?"
+    ],
+
+    [
+      "😊 SALIÓ BIEN",
+      "¿Qué fue lo que mejor salió durante este Sprint?"
+    ],
+
+    [
+      "📈 MEJORAMOS",
+      "¿En qué mejoramos con respecto al Sprint anterior?"
+    ],
+
+    [
+      "🔙 RETRO ANTERIOR",
+      "¿Mejoramos algo que habíamos identificado en la retrospectiva anterior?"
+    ],
+
+    [
+      "💪 FUNCIONÓ",
+      "¿Qué hicimos durante este Sprint que funcionó especialmente bien?"
+    ],
+
+    [
+      "🤝 EQUIPO",
+      "¿Qué hicimos bien como equipo durante este Sprint?"
+    ],
+
+    [
+      "📢 COMUNICACIÓN",
+      "¿Qué funcionó bien en nuestra comunicación durante este Sprint?"
+    ],
+
+    [
+      "🎯 OBJETIVO",
+      "¿Qué hicimos bien para avanzar hacia el objetivo del Sprint?"
+    ],
+
+    [
+      "⚡ AVANCE",
+      "¿Qué nos ayudó a avanzar durante este Sprint?"
+    ],
+
+    [
+      "✨ MANTENER",
+      "¿Qué te gustaría que se mantuviera igual en el próximo Sprint?"
+    ]
+
   ],
 
+
   KUDOS: [
-    ["👏 KUDOS", "Reconoce algo concreto que hizo bien otra persona del equipo."],
-    ["🌟 RECONOCIMIENTO", "¿Quién te ayudó durante este Sprint y de qué manera?"],
-    ["💪 GRAN APORTE", "Menciona un aporte de otra persona que haya ayudado al equipo a avanzar."],
-    ["🤝 BUEN COMPAÑERO", "¿Qué acción de otra persona facilitó tu trabajo durante este Sprint?"],
-    ["🏆 MOMENTO DESTACADO", "Reconoce algo que hizo un compañero y que consideras que merece destacarse."],
-    ["💡 BUENA IDEA", "¿Qué idea de otra persona ayudó a mejorar el trabajo del equipo?"],
-    ["🦸 AL RESCATE", "¿Hubo alguien que ayudó a resolver un problema importante? ¿Qué hizo?"],
-    ["🎯 BUEN TRABAJO", "Menciona una tarea que otra persona realizó particularmente bien."],
-    ["💬 GRACIAS", "¿A quién del equipo le agradecerías algo de este Sprint y por qué?"],
-    ["✨ APORTE INVISIBLE", "Reconoce algún esfuerzo de un compañero que pudo haber pasado desapercibido."]
+
+    [
+      "👏 KUDOS",
+      "¿Qué hiciste bien durante este Sprint y te gustaría reconocer de vos mismo?"
+    ],
+
+    [
+      "🌟 ORGULLO",
+      "¿De qué aporte tuyo durante este Sprint te sentís más orgulloso?"
+    ],
+
+    [
+      "💬 GRACIAS",
+      "¿A quién del equipo le darías las gracias por algo que hizo durante este Sprint?"
+    ],
+
+    [
+      "💪 MI APORTE",
+      "¿Cuál consideras que fue tu mejor aporte al equipo durante este Sprint?"
+    ],
+
+    [
+      "🤝 AYUDA",
+      "¿Quién te ayudó durante este Sprint y cómo?"
+    ],
+
+    [
+      "🏆 LOGRO PERSONAL",
+      "¿Qué lograste durante este Sprint que te gustaría destacar?"
+    ],
+
+    [
+      "🙌 COMPAÑERO",
+      "¿Qué acción de un compañero te gustaría reconocer?"
+    ],
+
+    [
+      "🧠 MEJORA PERSONAL",
+      "¿Qué hiciste mejor en este Sprint que en el Sprint anterior?"
+    ],
+
+    [
+      "✨ RECONOCIMIENTO",
+      "Menciona algo bueno de tu trabajo o del trabajo de otra persona durante este Sprint."
+    ],
+
+    [
+      "💚 BUEN MOMENTO",
+      "¿Qué momento de tu trabajo durante este Sprint te hizo sentir satisfecho?"
+    ]
+
   ]
+
 };
 
 
 /* =====================================================
-   PREGUNTAS SORPRESA
+   30 PREGUNTAS SORPRESA
+   PREGUNTAS BÁSICAS DEL SPRINT
 ===================================================== */
 
 const surprises = [
-  ["🐞 BUG INESPERADO", "¿Qué fue lo más inesperado que ocurrió durante este Sprint?"],
-  ["👾 JEFE FINAL", "¿Cuál fue el mayor obstáculo del Sprint?"],
-  ["⚡ POWER-UP", "¿Qué hizo que el trabajo fluyera mejor?"],
-  ["↩️ CTRL + Z", "Si pudieras deshacer una decisión del Sprint, ¿cuál sería?"],
-  ["🔐 NIVEL SECRETO", "¿Qué aprendizaje obtuvimos que no esperábamos?"],
-  ["🔥 MODO DIFÍCIL", "¿Qué tarea fue más complicada de lo esperado?"],
-  ["🎁 BONUS", "Menciona algo pequeño que salió bien y casi nadie reconoció."],
-  ["🧩 DEUDA TÉCNICA", "¿Qué estamos posponiendo y deberíamos atender pronto?"],
-  ["🧭 CAMBIO DE RUMBO", "¿Qué haríamos diferente si repitiéramos este Sprint?"],
-  ["🎲 SUERTE", "¿Qué momento de este Sprint te gustaría destacar?"],
-  ["⏰ CONTRARRELOJ", "¿En qué momento sentiste que nos faltó tiempo?"],
-  ["🗺️ CAMINO ALTERNATIVO", "¿Qué tarea podríamos haber realizado de una manera diferente?"],
-  ["💥 CRITICAL HIT", "¿Qué problema tuvo un impacto mayor del que esperábamos?"],
-  ["❤️ VIDA EXTRA", "¿Qué nos ayudó a recuperarnos después de un problema o atraso?"],
-  ["🕵️ MISTERIO", "¿Qué problema tardamos demasiado en detectar?"],
-  ["🎮 NUEVA PARTIDA", "Si mañana comenzáramos este Sprint nuevamente, ¿qué sería lo primero que cambiarías?"],
-  ["🏎️ SPEEDRUN", "¿Qué parte del Sprint logramos completar más fácilmente de lo esperado?"],
-  ["🧨 BOMBA", "¿Qué situación pudo convertirse en un problema grande si no se hubiera atendido?"],
-  ["🧠 XP EXTRA", "¿Qué aprendiste personalmente durante este Sprint?"],
-  ["🔧 REPARACIÓN", "¿Qué proceso del equipo necesita un pequeño ajuste?"],
-  ["📡 SIN SEÑAL", "¿En qué momento nos faltó comunicación?"],
-  ["🗝️ LLAVE SECRETA", "¿Qué fue clave para que pudiéramos completar el trabajo?"],
-  ["🌀 PORTAL", "¿Qué cambio inesperado modificó nuestra forma de trabajar durante el Sprint?"],
-  ["🪫 BATERÍA BAJA", "¿Qué actividad consumió mucho esfuerzo para el resultado que produjo?"],
-  ["💎 OBJETO RARO", "¿Qué descubrimiento de este Sprint deberíamos aprovechar en el futuro?"],
-  ["🛡️ ESCUDO", "¿Qué hicimos que evitó que apareciera un problema mayor?"],
-  ["🚨 ALERTA", "¿Qué señal de problema deberíamos detectar más rápido la próxima vez?"],
-  ["🧪 EXPERIMENTO", "¿Qué te gustaría probar de manera diferente en el próximo Sprint?"],
-  ["🎯 MISIÓN", "¿Qué objetivo del Sprint consideras que estuvo más claro para el equipo?"],
-  ["🧟 REVIVIÓ", "¿Qué problema que creíamos resuelto volvió a aparecer?"]
-];
 
+  [
+    "🎯 EL SPRINT",
+    "En general, ¿cómo consideras que salió este Sprint?"
+  ],
+
+  [
+    "😊 LO MEJOR",
+    "¿Qué fue lo mejor de este Sprint?"
+  ],
+
+  [
+    "😕 LO PEOR",
+    "¿Qué fue lo que peor salió durante este Sprint?"
+  ],
+
+  [
+    "🔧 MEJORAR",
+    "¿Qué es lo principal que deberíamos mejorar para el próximo Sprint?"
+  ],
+
+  [
+    "📈 PROGRESO",
+    "¿Sentís que trabajamos mejor que en el Sprint anterior? ¿Por qué?"
+  ],
+
+  [
+    "🔙 SPRINT ANTERIOR",
+    "¿Qué problema del Sprint anterior logramos mejorar en este?"
+  ],
+
+  [
+    "🔁 SE REPITIÓ",
+    "¿Qué problema del Sprint anterior volvió a aparecer en este Sprint?"
+  ],
+
+  [
+    "✅ OBJETIVO",
+    "¿Consideras que logramos lo que esperábamos en este Sprint? ¿Por qué?"
+  ],
+
+  [
+    "🚧 BLOQUEO",
+    "¿Cuál fue el mayor bloqueo que tuvimos durante este Sprint?"
+  ],
+
+  [
+    "⏰ TIEMPO",
+    "¿Cómo manejamos el tiempo durante este Sprint?"
+  ],
+
+  [
+    "📋 ORGANIZACIÓN",
+    "¿Cómo estuvo nuestra organización durante este Sprint?"
+  ],
+
+  [
+    "📢 COMUNICACIÓN",
+    "¿Cómo estuvo la comunicación del equipo durante este Sprint?"
+  ],
+
+  [
+    "🤝 TRABAJO EN EQUIPO",
+    "¿Cómo consideras que trabajamos como equipo durante este Sprint?"
+  ],
+
+  [
+    "🎒 CARGA DE TRABAJO",
+    "¿Consideras que el trabajo estuvo bien distribuido durante este Sprint?"
+  ],
+
+  [
+    "😮 SORPRESA",
+    "¿Hubo algo que no salió como esperábamos durante este Sprint?"
+  ],
+
+  [
+    "✨ BUENA SORPRESA",
+    "¿Qué salió mejor de lo que esperábamos?"
+  ],
+
+  [
+    "🔥 DIFÍCIL",
+    "¿Qué fue lo más difícil de este Sprint?"
+  ],
+
+  [
+    "😌 FÁCIL",
+    "¿Qué fue más fácil de lo que esperábamos?"
+  ],
+
+  [
+    "⌛ PÉRDIDA DE TIEMPO",
+    "¿Hubo algo durante este Sprint en lo que sentimos que perdimos tiempo?"
+  ],
+
+  [
+    "🧠 APRENDIZAJE",
+    "¿Qué aprendimos durante este Sprint?"
+  ],
+
+  [
+    "💡 LECCIÓN",
+    "¿Qué enseñanza de este Sprint deberíamos recordar para el próximo?"
+  ],
+
+  [
+    "↩️ CTRL + Z",
+    "Si pudieras cambiar una cosa de este Sprint, ¿qué cambiarías?"
+  ],
+
+  [
+    "🎮 REPETIR",
+    "Si tuviéramos que repetir este Sprint, ¿qué haríamos diferente?"
+  ],
+
+  [
+    "🚀 PRÓXIMO SPRINT",
+    "¿Qué te gustaría que fuera diferente en el próximo Sprint?"
+  ],
+
+  [
+    "💚 MANTENER",
+    "¿Qué te gustaría mantener igual para el próximo Sprint?"
+  ],
+
+  [
+    "🛠️ CAMBIO",
+    "¿Qué cambio hicimos durante este Sprint que funcionó bien?"
+  ],
+
+  [
+    "❌ NO FUNCIONÓ",
+    "¿Qué cambio o idea no funcionó como esperábamos?"
+  ],
+
+  [
+    "🏆 LOGRO",
+    "¿Cuál consideras que fue el mayor logro del equipo durante este Sprint?"
+  ],
+
+  [
+    "🌡️ EQUIPO",
+    "¿Cómo te sentiste trabajando con el equipo durante este Sprint?"
+  ],
+
+  [
+    "⭐ UNA COSA",
+    "Si solo pudiéramos mejorar una cosa para el próximo Sprint, ¿cuál debería ser?"
+  ]
+
+];
 
 /* =====================================================
    UTILIDADES
