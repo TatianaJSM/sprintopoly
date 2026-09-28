@@ -251,16 +251,22 @@
 
 
         <button id="summaryBtn">
-          📋 VER RESUMEN
-        </button>
+  📋 VER RESUMEN
+</button>
 
+<button
+  id="finishBtn"
+  class="hostOnly"
+>
+  🏁 FINALIZAR RETROSPECTIVA
+</button>
 
-        <button
-          id="resetBtn"
-          class="secondary hostOnly"
-        >
-          ↻ REINICIAR
-        </button>
+<button
+  id="resetBtn"
+  class="secondary hostOnly"
+>
+  ↻ REINICIAR
+</button>
 
       </aside>
 
@@ -371,7 +377,64 @@
 
   </div>
 
+<!-- ==========================================
+     RETROSPECTIVA FINALIZADA
+=========================================== -->
 
+<div
+  id="finishModal"
+  class="modal hidden"
+>
+  <div class="modalcard">
+
+    <div
+      style="
+        text-align:center;
+        font-size:55px;
+        margin-bottom:10px;
+      "
+    >
+      🏁
+    </div>
+
+    <h2 style="text-align:center;">
+      ¡RETROSPECTIVA FINALIZADA!
+    </h2>
+
+    <p
+      style="
+        text-align:center;
+        font-size:18px;
+        line-height:1.5;
+      "
+    >
+      Gracias por jugar Sprintopoly.
+      Revisemos lo que aprendimos
+      durante este Sprint.
+    </p>
+
+    <button
+      id="finalSummaryBtn"
+      style="
+        width:100%;
+        margin-top:20px;
+      "
+    >
+      📋 VER RESUMEN
+    </button>
+
+    <button
+      id="finalPdfBtn"
+      style="
+        width:100%;
+        margin-top:12px;
+      "
+    >
+      📄 DESCARGAR RESUMEN EN PDF
+    </button>
+
+  </div>
+</div>
 
   <!-- ==========================================
        APP

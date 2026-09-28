@@ -513,19 +513,48 @@ function render() {
       .join("");
   }
 
-  if (state.status === "game") {
-    show("game");
+ if (
+  state.status === "game" ||
+  state.status === "finished"
+) {
 
-    drawBoard();
-    renderPlayers();
+  show("game");
 
-    if (
-      !animationRunning &&
-      !state.animation
-    ) {
-      renderRound();
-    }
+  drawBoard();
+  renderPlayers();
+
+
+  if (
+    state.status === "finished"
+  ) {
+
+    $("promptModal")
+      ?.classList
+      .add("hidden");
+
+
+    showFinishedScreen();
+
+    return;
+
   }
+
+
+  $("finishModal")
+    ?.classList
+    .add("hidden");
+
+
+  if (
+    !animationRunning &&
+    !state.animation
+  ) {
+
+    renderRound();
+
+  }
+
+}
 }
 
 
@@ -2151,7 +2180,116 @@ function downloadSummaryPDF() {
     "📄 Resumen descargado"
   );
 }
+/* =====================================================
+   FINALIZAR RETROSPECTIVA
+===================================================== */
 
+async function finishRetrospective() {
+
+  if (!amIHost()) {
+    toast(
+      "Solo el anfitrión puede finalizar la retrospectiva"
+    );
+
+    return;
+  }
+
+
+  /*
+    No permitimos finalizar mientras
+    existe una pregunta activa.
+
+    Así evitamos perder respuestas
+    de la ronda actual.
+  */
+
+  if (state?.round) {
+
+    toast(
+      "Termina primero la ronda actual"
+    );
+
+    return;
+  }
+
+
+  const confirmed = confirm(
+    "¿Seguro que deseas finalizar la retrospectiva? Después de finalizar ya no se podrán realizar más turnos."
+  );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    /*
+      Guardamos en Firebase que
+      la retrospectiva terminó.
+    */
+
+    await update(
+      ref(
+        db,
+        "rooms/" + room
+      ),
+      {
+        status: "finished",
+        animation: null,
+        round: null,
+        finishedAt: Date.now()
+      }
+    );
+
+
+    toast(
+      "🏁 Retrospectiva finalizada"
+    );
+
+  } catch (error) {
+
+    console.error(
+      "Error finalizando retrospectiva:",
+      error
+    );
+
+
+    toast(
+      "No se pudo finalizar la retrospectiva"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   MOSTRAR PANTALLA FINAL
+===================================================== */
+
+function showFinishedScreen() {
+
+  if (!$("finishModal")) {
+    return;
+  }
+
+
+  $("finishModal")
+    .classList
+    .remove("hidden");
+
+
+  /*
+    Nadie puede volver a tirar.
+  */
+
+  if ($("rollBtn")) {
+    $("rollBtn").disabled = true;
+  }
+
+}
 
 /* =====================================================
    CONECTAR TODOS LOS BOTONES
@@ -2194,7 +2332,14 @@ const closeSummaryBtn =
 
 const downloadPdfBtn =
   $("downloadPdfBtn");
+const finishBtn =
+  $("finishBtn");
 
+const finalSummaryBtn =
+  $("finalSummaryBtn");
+
+const finalPdfBtn =
+  $("finalPdfBtn");
 
 if (createBtn) {
   createBtn.addEventListener(
@@ -2270,7 +2415,42 @@ if (closeSummaryBtn) {
     }
   );
 }
+if (finishBtn) {
 
+  finishBtn.addEventListener(
+    "click",
+    finishRetrospective
+  );
+
+}
+
+
+if (finalSummaryBtn) {
+
+  finalSummaryBtn.addEventListener(
+    "click",
+    () => {
+
+      $("finishModal")
+        ?.classList
+        .add("hidden");
+
+      showSummary();
+
+    }
+  );
+
+}
+
+
+if (finalPdfBtn) {
+
+  finalPdfBtn.addEventListener(
+    "click",
+    downloadSummaryPDF
+  );
+
+}
 
 /*
   ESTE ES EL CAMBIO IMPORTANTE:
