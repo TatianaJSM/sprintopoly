@@ -3,41 +3,78 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
 
   <title>Sprintopoly</title>
 
-  <link rel="stylesheet" href="styles.css">
+  <link
+    rel="stylesheet"
+    href="styles.css"
+  >
+
+  <!--
+    jsPDF:
+    permite crear y descargar el PDF
+    directamente desde el navegador.
+  -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+  ></script>
+
 </head>
+
 
 <body>
 
   <div id="toast"></div>
 
-  <!-- =========================
-       INICIO
-  ========================== -->
 
-  <section id="home" class="screen">
+  <!-- ==========================================
+       INICIO
+  =========================================== -->
+
+  <section
+    id="home"
+    class="screen"
+  >
 
     <div class="hero card">
 
       <div class="logo">
+
         🎩
-        <span>SPRINTOPOLY</span>
+
+        <span>
+          SPRINTOPOLY
+        </span>
+
       </div>
 
-      <h1>La retrospectiva que se juega</h1>
+
+      <h1>
+        La retrospectiva que se juega
+      </h1>
+
 
       <p>
         2–5 personas · una sala · respuestas sincronizadas
       </p>
 
+
       <div class="homegrid">
+
+
+        <!-- CREAR -->
 
         <div>
 
-          <h2>Crear partida</h2>
+          <h2>
+            Crear partida
+          </h2>
 
           <input
             id="hostName"
@@ -52,9 +89,14 @@
 
         </div>
 
+
+        <!-- UNIRSE -->
+
         <div>
 
-          <h2>Unirme</h2>
+          <h2>
+            Unirme
+          </h2>
 
           <input
             id="joinName"
@@ -81,37 +123,56 @@
   </section>
 
 
-  <!-- =========================
-       LOBBY
-  ========================== -->
 
-  <section id="lobby" class="screen hidden">
+  <!-- ==========================================
+       LOBBY
+  =========================================== -->
+
+  <section
+    id="lobby"
+    class="screen hidden"
+  >
 
     <div class="card lobby">
 
       <div class="logo">
+
         🎩
-        <span>SPRINTOPOLY</span>
+
+        <span>
+          SPRINTOPOLY
+        </span>
+
       </div>
 
+
       <h2>
+
         Sala
+
         <strong id="lobbyCode"></strong>
+
       </h2>
+
 
       <p id="count">
         0/5 jugadores
       </p>
 
+
       <div id="lobbyPlayers"></div>
+
 
       <button id="startBtn">
         🎲 COMENZAR RETRO
       </button>
 
+
       <p class="muted">
+
         Comparte el código con el equipo.
         Cada persona entra desde su computadora.
+
       </p>
 
     </div>
@@ -119,15 +180,25 @@
   </section>
 
 
-  <!-- =========================
-       JUEGO
-  ========================== -->
 
-  <section id="game" class="screen hidden">
+  <!-- ==========================================
+       JUEGO
+  =========================================== -->
+
+  <section
+    id="game"
+    class="screen hidden"
+  >
 
     <main class="layout">
 
-      <div id="board" class="board">
+
+      <!-- TABLERO -->
+
+      <div
+        id="board"
+        class="board"
+      >
 
         <div class="center">
 
@@ -135,21 +206,29 @@
             🎩 SPRINTOPOLY
           </div>
 
+
           <p>
             La retrospectiva que se juega
           </p>
 
-          <div id="diceMessage" class="diceMessage">
+
+          <div
+            id="diceMessage"
+            class="diceMessage"
+          >
             ¡Tira el dado!
           </div>
+
 
           <div id="die">
             ⚄
           </div>
 
+
           <button id="rollBtn">
             🎲 TIRAR DADO
           </button>
+
 
           <div id="turnText"></div>
 
@@ -158,17 +237,23 @@
       </div>
 
 
+
+      <!-- PANEL DERECHO -->
+
       <aside class="side card">
 
         <h2>
           🎩 Jugadores
         </h2>
 
+
         <div id="players"></div>
+
 
         <button id="summaryBtn">
           📋 VER RESUMEN
         </button>
+
 
         <button
           id="resetBtn"
@@ -184,9 +269,10 @@
   </section>
 
 
-  <!-- =========================
-       PREGUNTA
-  ========================== -->
+
+  <!-- ==========================================
+       MODAL DE PREGUNTA
+  =========================================== -->
 
   <div
     id="promptModal"
@@ -195,27 +281,35 @@
 
     <div class="modalcard">
 
+
       <div id="promptBadge"></div>
+
 
       <h2 id="promptTitle"></h2>
 
+
       <p id="promptQuestion"></p>
+
 
       <textarea
         id="answer"
         placeholder="Escribe tu respuesta..."
       ></textarea>
 
+
       <button id="submitAnswer">
         ENVIAR RESPUESTA
       </button>
 
+
       <div id="answerStatus"></div>
+
 
       <div
         id="revealed"
         class="hidden"
       ></div>
+
 
       <button
         id="continueBtn"
@@ -224,14 +318,16 @@
         CONTINUAR
       </button>
 
+
     </div>
 
   </div>
 
 
-  <!-- =========================
-       RESUMEN
-  ========================== -->
+
+  <!-- ==========================================
+       MODAL DEL RESUMEN
+  =========================================== -->
 
   <div
     id="summaryModal"
@@ -240,6 +336,7 @@
 
     <div class="modalcard wide">
 
+
       <button
         class="x"
         id="closeSummary"
@@ -247,16 +344,38 @@
         ×
       </button>
 
+
       <h2>
         📋 Resumen de la retrospectiva
       </h2>
 
+
       <div id="summaryContent"></div>
+
+
+      <!-- NUEVO BOTÓN -->
+
+      <button
+        id="downloadPdfBtn"
+        style="
+          width:100%;
+          margin-top:25px;
+          font-size:17px;
+        "
+      >
+        📄 DESCARGAR RESUMEN EN PDF
+      </button>
+
 
     </div>
 
   </div>
 
+
+
+  <!-- ==========================================
+       APP
+  =========================================== -->
 
   <script
     type="module"
